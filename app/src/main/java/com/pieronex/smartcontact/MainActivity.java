@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.ListView;
 
 import com.smartcontact.nex.smartcontact.R;
 
@@ -14,8 +16,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.contact_detail);
-        getActionBar().hide();
+        setContentView(R.layout.activity_main);
+//        getActionBar().hide();
+        ListView list = (ListView) findViewById(R.id.android_list);
+        list.setVisibility(View.INVISIBLE);
     }
 
 
