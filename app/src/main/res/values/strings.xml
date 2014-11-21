@@ -12,6 +12,5 @@
     <string name="address_title">Address</string>
     <string name="group_title">Group</string>
     <string name="add_field">Add Field</string>
-    <string name="title_activity_detail_contact">DetailContactActivity</string>
-
+    <string name="nocontact">No Contact Found</string>
 </resources>
