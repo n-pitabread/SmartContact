@@ -7,17 +7,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 
 import java.util.Observable;
 import java.util.Observer;
 
-import com.smartcontact.nex.smartcontact.R;
+import  com.pieronex.smartcontact.R;
 
 import java.util.Observer;
 
 
 public class MainActivity extends Activity implements Observer, View.OnClickListener {
     private Account accountModel;
+    private SearchView searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,8 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         setContentView(R.layout.activity_main);
         accountModel = new Account();
         accountModel.addObserver(this); // Add this activity to be the observer of the model
+
+        //searchBar
     }
 
 

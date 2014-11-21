@@ -2,7 +2,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:fillViewport="false"
-    android:id="@+id/scroll">
+    android:id="@+id/scroll"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.pieronex.smartcontact.DetailContactActivity">>
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -28,7 +30,7 @@
                 android:layout_width="128dp"
                 android:layout_height="128dp"
                 android:id="@+id/profile_pic"
-                android:src="@drawable/yinyang"
+                android:src="@drawable/ic_launcher"
                 android:layout_marginTop="140dp"
                 android:layout_centerHorizontal="true"
                 android:contentDescription="img"
