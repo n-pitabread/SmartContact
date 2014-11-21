@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="4dp"
         android:elevation="5dp">
+        <!--//comment-->
 
         <RelativeLayout
             android:layout_width="match_parent"
