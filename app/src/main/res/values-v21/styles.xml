@@ -11,5 +11,6 @@
         <item name="android:colorAccent">@color/accent</item>
         <!--navigation bar color        -->
         <item name="android:navigationBarColor">@color/navi</item>
+
     </style>
 </resources>

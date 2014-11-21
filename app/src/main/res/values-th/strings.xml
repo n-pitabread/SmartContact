@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="action_settings">ตั่งค่า</string>
+    <string name="app_name">SmartContact</string>
+    <string name="hello_world">สวัสดี</string>
+
+</resources>

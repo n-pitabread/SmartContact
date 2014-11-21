@@ -4,5 +4,13 @@
     <string name="app_name">SmartContact</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="contact_name">FirstName LastName</string>
+    <string name="contact_nickname">(nickname)</string>
+    <string name="phone_no">+6681-234-5678</string>
+    <string name="tags">#.....</string>
+    <string name="e_mail_title">E-mail</string>
+    <string name="address_title">Address</string>
+    <string name="group_title">Group</string>
+    <string name="add_field">Add Field</string>
 
 </resources>
