@@ -7,7 +7,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -20,15 +25,163 @@ import java.util.Observer;
 public class MainActivity extends Activity implements Observer, View.OnClickListener {
     private Account accountModel;
     private SearchView searchBar;
+    ArrayAdapter<String> adapter;
+    private ListView listView;
+    private TextView NoContact;
+
+    String[] values = new String[] { "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+            "Android List View",
+            "Adapter implementation",
+            "Simple List View In Android",
+            "Create List View Android",
+            "Android Example",
+            "List View Source Code",
+            "List View Array Adapter",
+            "Android Example List View",
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         accountModel = new Account();
-        accountModel.addObserver(this); // Add this activity to be the observer of the model
+        NoContact = (TextView) findViewById(R.id.NoContact);
+        listView= (ListView) findViewById(R.id.android_list);
+        if(values.length != 0)
+            NoContact.setVisibility(View.INVISIBLE);
 
+        accountModel.addObserver(this); // Add this activity to be the observer of the model
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
         //searchBar
+
+        // Assign adapter to ListView
+        listView.setAdapter(adapter);
+
+        // ListView Item Click Listener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                // ListView Clicked item index
+                int itemPosition     = position;
+
+                // ListView Clicked item value
+                String  itemValue    = (String) listView.getItemAtPosition(position);
+
+                // Show Alert
+                Toast.makeText(getApplicationContext(),
+                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+                        .show();
+
+            }
+
+        });
     }
 
 

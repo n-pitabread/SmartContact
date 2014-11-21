@@ -34,4 +34,6 @@ public class DetailContactActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }
