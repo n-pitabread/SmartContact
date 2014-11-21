@@ -12,16 +12,16 @@ public class AccountController {
     ArrayList<String> tags;
 
     private Account model;
-    private AccountView view;
+   // private AccountView view;
 
-    public AccountController(Account model, AccountView view) {
+    public AccountController(Account model) {
         this.model = model;
-        this.view = view;
+        //this.view = view;
     }
 
 
     public void updateView(){
-        view.showStudentDetails(model);
+       //   view.showStudentDetails(model);
         // wait Nook printAccountDetails();
     }
 

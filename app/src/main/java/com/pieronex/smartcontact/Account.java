@@ -3,11 +3,12 @@ package com.pieronex.smartcontact;
 import android.graphics.Picture;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
-public class Account {
+public class Account extends Observable{
     private int stat_of_search = 0;
     private String firstName;
     private String lastName;
@@ -15,7 +16,7 @@ public class Account {
     private String phoneNo;
     private String email;
     private Picture pictureProfile;
-    ArrayList<String> tags;
+    private ArrayList<String> tags;
 
 
     public String getDisplayName() {
@@ -47,7 +48,10 @@ public class Account {
     }
 
     public void setFirstName(String firstName) {
+
         this.firstName = firstName;
+        setChanged();
+        notifyObservers();
     }
 
     public void setLastName(String lastName) {
