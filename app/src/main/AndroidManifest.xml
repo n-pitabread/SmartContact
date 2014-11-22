@@ -17,10 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.pieronex.smartcontact.DetailContactActivity"
             android:label="@string/title_activity_detail_contact" >
+        </activity>
+        <activity
+            android:name="com.pieronex.smartcontact.EditContactActivity"
+            android:label="@string/title_activity_edit_contact" >
         </activity>
     </application>
 
