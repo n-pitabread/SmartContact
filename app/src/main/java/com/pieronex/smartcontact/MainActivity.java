@@ -1,11 +1,14 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Picture;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +33,7 @@ import java.util.Observer;
 public class MainActivity extends Activity implements Observer, View.OnClickListener {
     //private Account accountModel;
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
+    List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
     private SearchView searchBar;
     //ArrayAdapter<Account> adapter;
@@ -48,8 +52,13 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         bindWidget();
         setWidgetEventListener();
+        displayContacts();
 
     }
+
+//    public void onListViewClicked(View view) {
+//        startActivity(new Intent(getApplicationContext(), DetailContactActivity.class));
+//    }
 
     private class AccountAdapter extends ArrayAdapter<Account>{
         public AccountAdapter() {
@@ -69,12 +78,8 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     }
 
     public void setWidgetEventListener(){
-        //adapter = new AccountAdapter(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        //listView.setAdapter(adapter);
 
-
-
-         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
+         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
         listView.setAdapter(adapter);
         // ListView Item Click Listener
@@ -82,21 +87,18 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ListView Clicked item index
-
                 int itemPosition     = position;
                 // ListView Clicked item value
                 String  itemValue    = (String) listView.getItemAtPosition(position);
-
-
                 // Show Alert
                 Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
                 //DetailContactActivity info = new DetailContactActivity(itemValue);
-                startActivity(new Intent(getApplicationContext(), DetailContactActivity.class));
+
+                Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
+                intent.putExtra("name", itemValue);
+                startActivity(intent);
             }
         });
-
-
-
     }
 
     public void bindWidget(){
@@ -105,6 +107,49 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         if(values.length != 0)
             NoContact.setVisibility(View.INVISIBLE);
     }
+
+    private void displayContacts() {
+
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        contacts.add(name);
+                        Toast.makeText(MainActivity.this, "Name: " + name + ", Phone No: " + phoneNo, Toast.LENGTH_SHORT).show();
+
+                    }
+                    pCur.close();
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

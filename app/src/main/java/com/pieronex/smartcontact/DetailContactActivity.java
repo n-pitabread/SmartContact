@@ -1,10 +1,12 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class DetailContactActivity extends Activity {
@@ -23,7 +25,16 @@ public class DetailContactActivity extends Activity {
         bindWidget();
         getActionBar().hide();
         nameContact.setText(infoContact);
+
+        Intent inboundIndex = getIntent();
+        String _firstName = inboundIndex.getStringExtra("name");
+        Toast.makeText(getApplicationContext(), _firstName, Toast.LENGTH_SHORT).show();
+        nameContact.setText(_firstName);
+
     }
+
+
+
 
     public void bindWidget(){
         nameContact = (TextView)findViewById(R.id.name);
