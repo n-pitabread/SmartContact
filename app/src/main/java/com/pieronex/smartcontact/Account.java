@@ -8,16 +8,19 @@ import java.util.Observable;
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
-public class Account extends Observable{
+public class Account {//extends Observable{
     private int stat_of_search = 0;
-    private String firstName;
-    private String lastName;
-    private String displayName;
-    private String phoneNo;
-    private String email;
+    private String firstName = "";
+    private String lastName = "";
+    private String displayName = "";
+    private String phoneNo = "";
+    private String email = "";
     private Picture pictureProfile;
     private ArrayList<String> tags;
 
+    public Account(String name){
+        firstName = name;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -50,8 +53,8 @@ public class Account extends Observable{
     public void setFirstName(String firstName) {
 
         this.firstName = firstName;
-        setChanged();
-        notifyObservers();
+//        setChanged();
+//        notifyObservers();
     }
 
     public void setLastName(String lastName) {
