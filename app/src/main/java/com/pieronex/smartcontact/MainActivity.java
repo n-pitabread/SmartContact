@@ -1,9 +1,11 @@
 package com.pieronex.smartcontact;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Picture;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -146,42 +148,44 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        accountModel = new Account();
-        NoContact = (TextView) findViewById(R.id.NoContact);
-        listView= (ListView) findViewById(R.id.android_list);
-        if(values.length != 0)
-            NoContact.setVisibility(View.INVISIBLE);
+        setContentView(R.layout.contact_detail);
+//        accountModel = new Account();
+//        NoContact = (TextView) findViewById(R.id.NoContact);
+//        listView= (ListView) findViewById(R.id.android_list);
+//        if(values.length != 0)
+//            NoContact.setVisibility(View.INVISIBLE);
+//
+//        accountModel.addObserver(this); // Add this activity to be the observer of the model
+//        adapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+//        //searchBar
+//
+//        // Assign adapter to ListView
+//        listView.setAdapter(adapter);
+//
+//        // ListView Item Click Listener
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//
+//                // ListView Clicked item index
+//                int itemPosition     = position;
+//
+//                // ListView Clicked item value
+//                String  itemValue    = (String) listView.getItemAtPosition(position);
+//
+//                // Show Alert
+//                Toast.makeText(getApplicationContext(),
+//                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
+//                        .show();
+//
+//            }
+//
+//        });
+//
 
-        accountModel.addObserver(this); // Add this activity to be the observer of the model
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        //searchBar
-
-        // Assign adapter to ListView
-        listView.setAdapter(adapter);
-
-        // ListView Item Click Listener
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-
-                // ListView Clicked item index
-                int itemPosition     = position;
-
-                // ListView Clicked item value
-                String  itemValue    = (String) listView.getItemAtPosition(position);
-
-                // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG)
-                        .show();
-
-            }
-
-        });
     }
 
 
