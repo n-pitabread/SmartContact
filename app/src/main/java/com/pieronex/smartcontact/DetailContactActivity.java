@@ -1,20 +1,44 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class DetailContactActivity extends Activity {
+
+    private String infoContact;
+    TextView nameContact;
+//    public DetailContactActivity(String info) {
+//        setInfoContact(info);
+//    }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_detail);
+        bindWidget();
+        getActionBar().hide();
+        nameContact.setText(infoContact);
+
+        Intent inboundIndex = getIntent();
+        String _firstName = inboundIndex.getStringExtra("name");
+        Toast.makeText(getApplicationContext(), _firstName, Toast.LENGTH_SHORT).show();
+        nameContact.setText(_firstName);
+
     }
 
+
+
+
+    public void bindWidget(){
+        nameContact = (TextView)findViewById(R.id.name);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -36,4 +60,11 @@ public class DetailContactActivity extends Activity {
     }
 
 
+    public String getInfoContact() {
+        return infoContact;
+    }
+
+    public void setInfoContact(String infoContact) {
+        this.infoContact = infoContact;
+    }
 }
