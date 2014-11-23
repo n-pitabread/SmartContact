@@ -8,11 +8,13 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import  com.pieronex.smartcontact.R;
 
 public class DetailContactActivity extends Activity {
 
     private String infoContact;
     TextView nameContact;
+    CircleImageView imageProfile;
 //    public DetailContactActivity(String info) {
 //        setInfoContact(info);
 //    }
@@ -24,12 +26,13 @@ public class DetailContactActivity extends Activity {
         setContentView(R.layout.contact_detail);
         bindWidget();
         getActionBar().hide();
-        nameContact.setText(infoContact);
+        //nameContact.setText(infoContact);
 
         Intent inboundIndex = getIntent();
         String _firstName = inboundIndex.getStringExtra("name");
         Toast.makeText(getApplicationContext(), _firstName, Toast.LENGTH_SHORT).show();
         nameContact.setText(_firstName);
+       // imageProfile.setImageDrawable(R.drawable.test);
 
     }
 
@@ -37,6 +40,7 @@ public class DetailContactActivity extends Activity {
 
 
     public void bindWidget(){
+        imageProfile = (CircleImageView) findViewById(R.id.profile_pic);
         nameContact = (TextView)findViewById(R.id.name);
     }
 
