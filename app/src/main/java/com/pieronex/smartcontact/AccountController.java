@@ -65,11 +65,11 @@ public class AccountController {
         model.setEmail(accountEMail);
     }
 
-    public Picture getAccountPictureProfile() {
-        return model.getPictureProfile();
-    }
-
-    public void setAccountPictureProfile(Picture accountPictureProfile) {
-        model.setPictureProfile(accountPictureProfile);
-    }
+//    public Picture getAccountPictureProfile() {
+//        return model.getPictureProfile();
+//    }
+//
+//    public void setAccountPictureProfile(Picture accountPictureProfile) {
+//        model.setPictureProfile(accountPictureProfile);
+//    }
 }
