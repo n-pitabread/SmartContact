@@ -11,12 +11,11 @@ import android.widget.Toast;
 
 public class DetailContactActivity extends Activity {
 
-    private String infoContact;
+    private String nameinfo, nicknameinfo, telinfo, tagsinfo;
     TextView nameContact;
-//    public DetailContactActivity(String info) {
-//        setInfoContact(info);
-//    }
-
+    TextView nickname;
+    TextView phoneNo_mobile;
+    TextView tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,12 +23,11 @@ public class DetailContactActivity extends Activity {
         setContentView(R.layout.contact_detail);
         bindWidget();
         getActionBar().hide();
-        nameContact.setText(infoContact);
 
-        Intent inboundIndex = getIntent();
-        String _firstName = inboundIndex.getStringExtra("name");
-        Toast.makeText(getApplicationContext(), _firstName, Toast.LENGTH_SHORT).show();
-        nameContact.setText(_firstName);
+
+        //String _firstName = inboundIndex.getStringExtra("name");
+        //Toast.makeText(getApplicationContext(), _firstName, Toast.LENGTH_SHORT).show();
+        setUI();
 
     }
 
@@ -37,6 +35,9 @@ public class DetailContactActivity extends Activity {
 
 
     public void bindWidget(){
+        nickname = (TextView)findViewById(R.id.nickname);
+        phoneNo_mobile = (TextView)findViewById(R.id.phoneNo);
+        tags = (TextView)findViewById(R.id.tags);
         nameContact = (TextView)findViewById(R.id.name);
     }
 
@@ -59,12 +60,22 @@ public class DetailContactActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
     public String getInfoContact() {
         return infoContact;
     }
 
-    public void setInfoContact(String infoContact) {
-        this.infoContact = infoContact;
+    public void setInfoContact(String nameinfo, String nicknameinfo, String telinfo, String tagsinfo) {
+        Intent inboundIndex = getIntent();
+        this.nameinfo = inboundIndex.getStringExtra();
+        this.nicknameinfo = nicknameinfo;
+        this.telinfo = telinfo;
+        this.tagsinfo =
+    }
+
+    public void setUI(){
+        nameContact.setText(nameinfo);
+        nickname.setText(nicknameinfo);
+        phoneNo_mobile.setText(telinfo);
+        tags.setText(tagsinfo);
     }
 }
