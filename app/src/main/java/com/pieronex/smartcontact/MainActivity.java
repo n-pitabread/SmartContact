@@ -1,7 +1,9 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
+import android.app.ActionBar;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,7 +21,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.widget.AdapterView.OnItemClickListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -36,50 +38,43 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
     private SearchView searchBar;
+
     //ArrayAdapter<Account> adapter;
     ArrayAdapter adapter;
     private ListView listView;
     private TextView NoContact;
     String[] values = contactList();
 
+    ContentValues contentValues = new ContentValues();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.search);
+
         getActionBar().show();
         //accountModel = new ArrayList<Account>();
         //accountModel.addObserver(this); // Add this activity to be the observer of the model
 
         bindWidget();
         setWidgetEventListener();
-        displayContacts();
+
+
+
+        //  displayContacts();
+
+
 
     }
 
-//    public void onListViewClicked(View view) {
-//        startActivity(new Intent(getApplicationContext(), DetailContactActivity.class));
-//    }
 
-    private class AccountAdapter extends ArrayAdapter<Account>{
-        public AccountAdapter() {
-            super( MainActivity.this, R.layout.contact_detail, accountModel);
-        }
 
-        @Override
-        public View getView(int position, View view, ViewGroup parent){
-            if(view == null)
-                view = getLayoutInflater().inflate(R.layout.contact_detail, parent, false);
-            Account currentAccount = accountModel.get(position);
-            TextView name = (TextView) view.findViewById(R.id.name);
-            name.setText(currentAccount.getFirstName());
 
-            return view;
-        }
-    }
+    public void setWidgetEventListener() {
 
-    public void setWidgetEventListener(){
-
-         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
         // Assign adapter to ListView
         listView.setAdapter(adapter);
         // ListView Item Click Listener
@@ -87,29 +82,33 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ListView Clicked item index
-                int itemPosition     = position;
+                int itemPosition = position;
                 // ListView Clicked item value
-                String  itemValue    = (String) listView.getItemAtPosition(position);
+                String itemValue = (String) listView.getItemAtPosition(position);
                 // Show Alert
                 Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
                 //DetailContactActivity info = new DetailContactActivity(itemValue);
 
                 Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
-                intent.putExtra("name", itemValue);
+                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
                 startActivity(intent);
+//                intent.putExtra("Object", new Account("sd"));
+//                intent.putExtra("name", itemValue);
+//                intent.putExtra("PHONENum", "yj");
+
             }
         });
     }
 
-    public void bindWidget(){
+    public void bindWidget() {
         NoContact = (TextView) findViewById(R.id.NoContact);
-        listView= (ListView) findViewById(R.id.android_list);
-        if(values.length != 0)
+        listView = (ListView) findViewById(R.id.android_list);
+        if (values.length != 0)
             NoContact.setVisibility(View.INVISIBLE);
     }
 
     private void displayContacts() {
-
+       //  ContactsContract.CommonDataKinds.Photo
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -117,17 +116,19 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             while (cur.moveToNext()) {
                 String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String lastTimeContacted = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
                 if (Integer.parseInt(cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                             new String[]{id}, null);
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         contacts.add(name);
                         Toast.makeText(MainActivity.this, "Name: " + name + ", Phone No: " + phoneNo, Toast.LENGTH_SHORT).show();
+
 
                     }
                     pCur.close();
@@ -135,20 +136,6 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -181,14 +168,14 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             // case R.id.button1:
             // accountModel. ~~~~
         }
     }
 
-    public String[] contactList(){
-        return new String[] {"",
+    public String[] contactList() {
+        return new String[]{
                 "Android List View",
                 "Adapter implementation",
                 "Simple List View In Android",
@@ -304,6 +291,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         };
     }
+}
 
     ///// ---- Account Controller Method Part --
     ///*************************************************************///
@@ -367,4 +355,23 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 //    public void setAccountPictureProfile(Picture accountPictureProfile) {
 //        accountModel.setPictureProfile(accountPictureProfile);
 //    }
-}
+
+//private class AccountAdapter extends ArrayAdapter<Account>{
+//    public AccountAdapter() {
+//        super( MainActivity.this, R.layout.contact_detail, accountModel);
+//    }
+//
+//    @Override
+//    public View getView(int position, View view, ViewGroup parent){
+//        if(view == null)
+//            view = getLayoutInflater().inflate(R.layout.contact_detail, parent, false);
+//        Account currentAccount = accountModel.get(position);
+//        TextView name = (TextView) view.findViewById(R.id.name);
+//        name.setText(currentAccount.getFirstName());
+//
+//        return view;
+//    }
+//}
+
+
+
