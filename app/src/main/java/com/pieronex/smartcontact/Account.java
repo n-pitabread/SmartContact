@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Observable;
 
 /**
@@ -23,6 +24,8 @@ public class Account implements Parcelable{//extends Observable{
     private String pictureProfile;
     private ArrayList<String> tags;
 
+
+
     public Account(String _firstName, String _lastName , String _middleName ,String _nickName, String _phoneNo, String _email, String _pictureProfile){
         firstName = _firstName;
         lastName = _lastName;
@@ -32,6 +35,13 @@ public class Account implements Parcelable{//extends Observable{
         email = _email;
         pictureProfile = _pictureProfile;
     }
+
+    public Account(String mFirstName, String mPhoneNo){
+
+        this(mFirstName, mPhoneNo, "1", "2", "3", "4", "5");
+    }
+
+
 
     public String getDisplayName() {
         return displayName;
