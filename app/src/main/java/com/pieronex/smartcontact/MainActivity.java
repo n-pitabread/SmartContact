@@ -3,12 +3,16 @@ package com.pieronex.smartcontact;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Picture;
 import android.media.audiofx.AcousticEchoCanceler;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -18,14 +22,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -40,7 +49,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
-    private SearchView searchBar;
+//    private SearchView searchBar;
 
     //ArrayAdapter<Account> adapter;
     ArrayAdapter adapter;
@@ -49,6 +58,12 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     String[] values = contactList();
 
     ContentValues contentValues = new ContentValues();
+
+
+    //SearchBar
+    //private CardView card;
+    private SearchView searchBar;
+    RelativeLayout relay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +78,43 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         bindWidget();
         setWidgetEventListener();
-    readContacts();
+        //readContacts();
 
 
-//          displayContacts();
+        relay.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Log.d("search", "Workk!!!");
+//                searchBar.setOnQueryTextListener(this);
+
+                    //searchBar.onActionViewCollapsed();
+                    searchBar.onActionViewExpanded();
+                //searchBar.setSubmitButtonEnabled(true);
+
+            }
+        });
+
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("KEY", "0");
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("KEY", newText);
+                return false;
+            }
+        });
 
 
+        displayContacts();
 
     }
+
+
 
     public static void sort(List<String> contactss) {
         int j;
@@ -83,9 +127,28 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         }
     }
 
+    public void bindWidget() {
+
+        NoContact = (TextView) findViewById(R.id.NoContact);
+        listView = (ListView) findViewById(R.id.android_list);
+        //card  = (CardView) findViewById(R.id.card_view);
+        relay = (RelativeLayout) findViewById(R.id.search);
+        searchBar = (SearchView) findViewById(R.id.searchButton);
+        searchBar.onActionViewCollapsed();
+        if (values.length != 0)
+            NoContact.setVisibility(View.INVISIBLE);
+    }
 
     public void setWidgetEventListener() {
-        Collections.sort(contacts, new FirstNameComparator());
+
+        Collections.sort(contacts, new Comparator<String>() {
+            @Override
+            public int compare(String lhs, String rhs) {
+                return lhs.compareTo(rhs);
+            }
+        });
+
+
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
@@ -95,77 +158,121 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // ListView Clicked item index
-                int itemPosition = position;
+//                int itemPosition = position;
                 // ListView Clicked item value
-                String itemValue = (String) listView.getItemAtPosition(position);
+//                String itemValue = (String) listView.getItemAtPosition(position);
                 // Show Alert
-                Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
                 //DetailContactActivity info = new DetailContactActivity(itemValue);
-
+               // listView.setItemChecked(position, true);
                 Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
                 intent.putExtra("account", accountModel.get(position));//new Account("1","2","3","4","5","6","7"));
-                //intent.putExtra("account", )
+//                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
+
                 startActivity(intent);
-//                intent.putExtra("Object", new Account("sd"));
-//                intent.putExtra("name", itemValue);
-//                intent.putExtra("PHONENum", "yj");
 
             }
         });
     }
 
-    public void bindWidget() {
-        NoContact = (TextView) findViewById(R.id.NoContact);
-        listView = (ListView) findViewById(R.id.android_list);
-        if (values.length != 0)
-            NoContact.setVisibility(View.INVISIBLE);
+
+    private Uri getPhotoUriFromID(String id) {
+        try {
+            Cursor cur = getContentResolver()
+                    .query(ContactsContract.Data.CONTENT_URI,
+                            null,
+                            ContactsContract.Data.CONTACT_ID
+                                    + "="
+                                    + id
+                                    + " AND "
+                                    + ContactsContract.Data.MIMETYPE
+                                    + "='"
+                                    + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
+                                    + "'", null, null);
+            if (cur != null) {
+                if (!cur.moveToFirst()) {
+                    return null; // no photo
+                }
+            } else {
+                return null; // error in cursor process
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Uri person = ContentUris.withAppendedId(
+                ContactsContract.Contacts.CONTENT_URI, Long.parseLong(id));
+        return Uri.withAppendedPath(person,
+                ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
+
     }
 
-//    private void displayContacts() {
-//       //  ContactsContract.CommonDataKinds.Photo
-//        String mEmail, mId, mDisplayName, mPhoneNo, mLastTimeContacted, mNickName, mMiddleName;
-//        String mGivenName, mFamilyName, mPrefix, mSuffix;
-//        ContentResolver cr = getContentResolver();
-//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-//                null, null, null, null);
-//        if (cur.getCount() > 0) {
-//            while (cur.moveToNext()) {
-//                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-//                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                mLastTimeContacted = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
-//                mEmail = cur.getString(cur.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_NAME));
-//                Cursor emails = cr.query(
-//                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-//                        null,
-//                        ContactsContract.CommonDataKinds.Email.CONTACT_ID
-//                                + " = " + mId, null, null);
+
+    private void displayContacts() {
+        //  ContactsContract.CommonDataKinds.Photo
+        String mEmail, mId, mDisplayName, mPhoneNo, mLastTimeContacted, mNickName, mMiddleName;
+        String mGivenName, mFamilyName, mPrefix, mSuffix, mPicture;
+        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sortOrder);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                mLastTimeContacted = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
+//                mPicture = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+//                Log.d("image String", mPicture);
+                if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{mId}, null);
+                    while (pCur.moveToNext()) {
+                        mPhoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        //mEmail = pCur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID));
+                        //Log.e("Email", mEmail);
+                        contacts.add(mGivenName + ",   "+ mPhoneNo);
+                        accountModel.add(new Account(mGivenName, mPhoneNo));
+                        Uri picturePerson = getPhotoUriFromID(mId);
+                        mPicture = picturePerson.toString();
+                        Log.d("picture", mPicture);
+                        //Toast.makeText(MainActivity.this, "Name: " + mGivenName + ", lastContact No: " + mLastTimeContacted, Toast.LENGTH_SHORT).show();
+                    }
+                    pCur.close();
+
+
+
+                }
+            }
+        }
+    }
+
+
+//    private void retrieveContactPhoto() {
 //
-//                if (Integer.parseInt(cur.getString(
-//                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-//                    Cursor pCur = cr.query(
-//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-//                            new String[]{mId}, null);
-//                    while (pCur.moveToNext()) {
-//                        mPhoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        //mEmail = pCur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID));
-//                       //Log.e("Email", mEmail);
-//                        contacts.add(mGivenName);
-//                        accountModel.add(new Account(mGivenName, mPhoneNo));
-//                        Toast.makeText(MainActivity.this, "Name: " + mGivenName + ", Email No: " + mEmail, Toast.LENGTH_SHORT).show();
+//        Bitmap photo = null;
 //
+//        try {
+//            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(),
+//                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactID)));
 //
-//                    }
-//                    pCur.close();
-//                }
+//            if (inputStream != null) {
+//                photo = BitmapFactory.decodeStream(inputStream);
+//                ImageView imageView = (ImageView) findViewById(R.id.img_contact);
+//                imageView.setImageBitmap(photo);
 //            }
+//
+//            assert inputStream != null;
+//            inputStream.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
+//
 //    }
-    //cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?", new String[] {mId}, null);
-//                int emailIdx = cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-//                mEmail =cur.getString(emailIdx);
-//                Log.e("Email", mEmail);
 
 
     @Override
@@ -335,111 +442,111 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             while (cur.moveToNext()) {
                 mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
                 mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-             //  ur.getString(cur.getColumnIndex(ContactsContract.Contacts.));
+                //  ur.getString(cur.getColumnIndex(ContactsContract.Contacts.));
                 if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        //System.out.println("name : " + mGivenName + ", ID : " + mId);
+                    //System.out.println("name : " + mGivenName + ", ID : " + mId);
 
-                        // get the phone number
-                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                new String[]{mId}, null);
-                        while (pCur.moveToNext()) {
-                            mPhoneNo = pCur.getString(
-                                    pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            //System.out.println("phone" + mPhoneNo);
-                        }
-                        pCur.close();
+                    // get the phone number
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{mId}, null);
+                    while (pCur.moveToNext()) {
+                        mPhoneNo = pCur.getString(
+                                pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        //System.out.println("phone" + mPhoneNo);
+                    }
+                    pCur.close();
 
 
-                        // get email and type
+                    // get email and type
 
-                        Cursor emailCur = cr.query(
-                                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                                new String[]{mId}, null);
-                        while (emailCur.moveToNext()) {
-                            // This would allow you get several email addresses
-                            // if the email addresses were stored in an array
-                            mEmail = emailCur.getString(
-                                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                            String emailType = emailCur.getString(
-                                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+                    Cursor emailCur = cr.query(
+                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                            new String[]{mId}, null);
+                    while (emailCur.moveToNext()) {
+                        // This would allow you get several email addresses
+                        // if the email addresses were stored in an array
+                        mEmail = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                        String emailType = emailCur.getString(
+                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
 
-                           // System.out.println("Email " + mEmail + " Email Type : " + emailType);
-                        }
-                        emailCur.close();
+                        // System.out.println("Email " + mEmail + " Email Type : " + emailType);
+                    }
+                    emailCur.close();
 
-                        // Get note.......
-                        String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                        String[] noteWhereParams = new String[]{mId,
-                                ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
-                        Cursor noteCur = cr.query(ContactsContract.Data.CONTENT_URI, null, noteWhere, noteWhereParams, null);
-                        if (noteCur.moveToFirst()) {
-                            mNote = noteCur.getString(noteCur.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
-                          //  System.out.println("Note " + mNote);
-                        }
-                        noteCur.close();
+                    // Get note.......
+                    String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+                    String[] noteWhereParams = new String[]{mId,
+                            ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
+                    Cursor noteCur = cr.query(ContactsContract.Data.CONTENT_URI, null, noteWhere, noteWhereParams, null);
+                    if (noteCur.moveToFirst()) {
+                        mNote = noteCur.getString(noteCur.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
+                        //  System.out.println("Note " + mNote);
+                    }
+                    noteCur.close();
 
-                        //Get Postal Address....
+                    //Get Postal Address....
 
-                        String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                        String[] addrWhereParams = new String[]{mId,
-                                ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
-                        Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                                null, null, null, null);
-                        while (addrCur.moveToNext()) {
-                            String poBox = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
-                            String street = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
-                            String city = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
-                            String state = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
-                            String postalCode = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
-                            String country = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
-                            String type = addrCur.getString(
-                                    addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
+                    String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+                    String[] addrWhereParams = new String[]{mId,
+                            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
+                    Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                            null, null, null, null);
+                    while (addrCur.moveToNext()) {
+                        String poBox = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
+                        String street = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
+                        String city = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
+                        String state = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
+                        String postalCode = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
+                        String country = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
+                        String type = addrCur.getString(
+                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
 
-                            // Do something with these....
-                            mAddress = poBox + ", " + street + ", " + city + ", " + state + ", " + postalCode + ", " + country;
+                        // Do something with these....
+                        mAddress = poBox + ", " + street + ", " + city + ", " + state + ", " + postalCode + ", " + country;
 
-                        }
-                        addrCur.close();
+                    }
+                    addrCur.close();
 
-                        // Get Instant Messenger.........
-                        String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                        String[] imWhereParams = new String[]{mId,
-                                ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
-                        Cursor imCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                                null, imWhere, imWhereParams, null);
-                        if (imCur.moveToFirst()) {
-                            String imName = imCur.getString(
-                                    imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
-                            String imType;
-                            imType = imCur.getString(
-                                    imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
-                            mInstantM = imName + ", " + imType;
-                        }
-                        imCur.close();
+                    // Get Instant Messenger.........
+                    String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+                    String[] imWhereParams = new String[]{mId,
+                            ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
+                    Cursor imCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                            null, imWhere, imWhereParams, null);
+                    if (imCur.moveToFirst()) {
+                        String imName = imCur.getString(
+                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+                        String imType;
+                        imType = imCur.getString(
+                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
+                        mInstantM = imName + ", " + imType;
+                    }
+                    imCur.close();
 
-                        // Get Organizations.........
+                    // Get Organizations.........
 
-                        String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                        String[] orgWhereParams = new String[]{mId,
-                                ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE};
-                        Cursor orgCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                                null, orgWhere, orgWhereParams, null);
-                        if (orgCur.moveToFirst()) {
-                            String orgName = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
-                            String title = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
-                            mWhereOrg = orgWhere + ", " + title;
-                        }
+                    String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+                    String[] orgWhereParams = new String[]{mId,
+                            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE};
+                    Cursor orgCur = cr.query(ContactsContract.Data.CONTENT_URI,
+                            null, orgWhere, orgWhereParams, null);
+                    if (orgCur.moveToFirst()) {
+                        String orgName = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
+                        String title = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
+                        mWhereOrg = orgWhere + ", " + title;
+                    }
 
-                        orgCur.close();
+                    orgCur.close();
 
                     String familyName =ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
                     String[] familyNameParams = new String[]{mId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
@@ -458,19 +565,19 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     }
 }
 
-    ///// ---- Account Controller Method Part --
-    ///*************************************************************///
-    //    getAccountLastName()
-    //    setAccountLastName(String accountLastName)
-    //    getAccountDisplayName()
-    //    setAccountDisplayName(String accountDisplayName)
-    //    getAccountPhoneNo()
-    //    setAccountPhoneNo(String accountPhoneNo)
-    //    getAccountEMail()
-    //    setAccountEMail(String accountEMail)
-    //    getAccountPictureProfile()
-    //    setAccountPictureProfile(Picture accountPictureProfile)
-    ///*************************************************************///
+///// ---- Account Controller Method Part --
+///*************************************************************///
+//    getAccountLastName()
+//    setAccountLastName(String accountLastName)
+//    getAccountDisplayName()
+//    setAccountDisplayName(String accountDisplayName)
+//    getAccountPhoneNo()
+//    setAccountPhoneNo(String accountPhoneNo)
+//    getAccountEMail()
+//    setAccountEMail(String accountEMail)
+//    getAccountPictureProfile()
+//    setAccountPictureProfile(Picture accountPictureProfile)
+///*************************************************************///
 
 //
 //    public String getAccountFirstName() {
