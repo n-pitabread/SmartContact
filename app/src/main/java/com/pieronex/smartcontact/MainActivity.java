@@ -35,7 +35,7 @@ import  com.pieronex.smartcontact.R;
 import java.util.Observer;
 
 
-public class MainActivity extends Activity implements Observer, View.OnClickListener {
+public class MainActivity extends Activity implements Observer, View.OnClickListener{
     //private Account accountModel;
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
     List<String> contacts = new ArrayList<String>();
@@ -57,16 +57,16 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 //        super.onCreate(savedInstanceState);
 //        setContentView(R.layout.search);
 
+//
         getActionBar().show();
-        //accountModel = new ArrayList<Account>();
-        //accountModel.addObserver(this); // Add this activity to be the observer of the model
+
 
         bindWidget();
         setWidgetEventListener();
-    readContacts();
+//    readContacts();
 
 
-//          displayContacts();
+          displayContacts();
 
 
 
@@ -85,7 +85,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
 
     public void setWidgetEventListener() {
-        Collections.sort(contacts, new FirstNameComparator());
+//        Collections.sort(contacts, new FirstNameComparator());
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
@@ -94,78 +94,93 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                searchBar.setQuery("",true);
+//                Cursor cursor = (Cursor) listView.getItemAtPosition(position);
+
+                // Get the state's capital from this row in the database.
+//                String customer = cursor.getString(cursor.getColumnIndexOrThrow("customer"));
+
                 // ListView Clicked item index
                 int itemPosition = position;
                 // ListView Clicked item value
                 String itemValue = (String) listView.getItemAtPosition(position);
                 // Show Alert
-                Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Position :" + id + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
                 //DetailContactActivity info = new DetailContactActivity(itemValue);
 
                 Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
                 intent.putExtra("account", accountModel.get(position));//new Account("1","2","3","4","5","6","7"));
-                //intent.putExtra("account", )
+//                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
+//                intent.putExtra("account", new Account(,"") )
                 startActivity(intent);
-//                intent.putExtra("Object", new Account("sd"));
-//                intent.putExtra("name", itemValue);
-//                intent.putExtra("PHONENum", "yj");
+//                searchBar.setQuery("...", true);
 
             }
         });
+
+        //searchBar.setOnSearchClickListener();
+
     }
 
+
+
     public void bindWidget() {
+       searchBar = (SearchView) findViewById(R.id.searchButton);
+        searchBar.setActivated(false);
+//        searchBar.setIconifiedByDefault(false);
+//       searchBar.setOnQueryTextListener(){
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                showResults(newText + "*");
+//                return false;
+//            }
+//        }
+//        searchBar.setOnCloseListener((SearchView.OnCloseListener) this);
         NoContact = (TextView) findViewById(R.id.NoContact);
         listView = (ListView) findViewById(R.id.android_list);
         if (values.length != 0)
             NoContact.setVisibility(View.INVISIBLE);
     }
 
-//    private void displayContacts() {
-//       //  ContactsContract.CommonDataKinds.Photo
-//        String mEmail, mId, mDisplayName, mPhoneNo, mLastTimeContacted, mNickName, mMiddleName;
-//        String mGivenName, mFamilyName, mPrefix, mSuffix;
-//        ContentResolver cr = getContentResolver();
-//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-//                null, null, null, null);
-//        if (cur.getCount() > 0) {
-//            while (cur.moveToNext()) {
-//                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-//                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                mLastTimeContacted = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
-//                mEmail = cur.getString(cur.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_NAME));
-//                Cursor emails = cr.query(
-//                        ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-//                        null,
-//                        ContactsContract.CommonDataKinds.Email.CONTACT_ID
-//                                + " = " + mId, null, null);
-//
-//                if (Integer.parseInt(cur.getString(
-//                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-//                    Cursor pCur = cr.query(
-//                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-//                            new String[]{mId}, null);
-//                    while (pCur.moveToNext()) {
-//                        mPhoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        //mEmail = pCur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID));
-//                       //Log.e("Email", mEmail);
-//                        contacts.add(mGivenName);
-//                        accountModel.add(new Account(mGivenName, mPhoneNo));
-//                        Toast.makeText(MainActivity.this, "Name: " + mGivenName + ", Email No: " + mEmail, Toast.LENGTH_SHORT).show();
-//
-//
-//                    }
-//                    pCur.close();
-//                }
-//            }
-//        }
-//    }
-    //cur = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=?", new String[] {mId}, null);
-//                int emailIdx = cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-//                mEmail =cur.getString(emailIdx);
-//                Log.e("Email", mEmail);
+   private void displayContacts() {
+       //  ContactsContract.CommonDataKinds.Photo
+        String mEmail, mId, mDisplayName, mPhoneNo, mLastTimeContacted, mNickName, mMiddleName;
+        String mGivenName, mFamilyName, mPrefix, mSuffix;
+
+        ContentResolver cr = getContentResolver();
+
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+       if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            new String[]{mId}, null);
+                    while (pCur.moveToNext()) {
+                        mPhoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                        contacts.add(mGivenName);
+                        accountModel.add(new Account(mGivenName, mId));
+                        Toast.makeText(MainActivity.this, "Name: " + mGivenName + ", ID No: " + mId, Toast.LENGTH_SHORT).show();
+
+
+                    }
+                    pCur.close();
+                }
+            }
+        }
+    }
 
 
     @Override
@@ -204,123 +219,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         }
     }
 
-    public String[] contactList() {
-        return new String[]{
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
-                "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View",
 
-        };
-    }
 
 
     public void readContacts() {
@@ -456,6 +355,125 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             }
         }
     }
+    public String[] contactList() {
+        return new String[]{
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+                "Android List View",
+                "Adapter implementation",
+                "Simple List View In Android",
+                "Create List View Android",
+                "Android Example",
+                "List View Source Code",
+                "List View Array Adapter",
+                "Android Example List View",
+
+        };
+    }
+
+
 }
 
     ///// ---- Account Controller Method Part --
