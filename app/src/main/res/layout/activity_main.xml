@@ -21,6 +21,43 @@
         android:textSize="30dp"
         android:text="@string/nocontact"/>
 
+
+    <!--android:overScrollHeader="@drawable/yinyang-->
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        card_view:cardCornerRadius="4dp"
+        android:clickable="true">
+
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:textAlignment="viewEnd"
+            android:id="@+id/search">
+
+
+
+            <SearchView
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:label="@string/hello_world"
+                android:imeOptions="actionSearch"
+                android:iconifiedByDefault="true"
+                android:layout_alignParentEnd="false"
+                ></SearchView>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
     <ListView
         android:id="@+id/android_list"
         android:layout_width="fill_parent"
@@ -36,45 +73,8 @@
         android:paddingRight="22dp"
         android:fadeScrollbars="false"
         android:smoothScrollbar="true"
+        android:layout_below="@id/card_view"
         />
-    <!--android:overScrollHeader="@drawable/yinyang-->
-
-    <android.support.v7.widget.CardView
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
-        android:layout_gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        card_view:cardCornerRadius="4dp">
-
-        <RelativeLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:textAlignment="viewEnd"
-            android:onClick="searchBarClicked"
-            android:id="@+id/search">
-
-
-
-            <SearchView
-
-
-                android:id="@+id/searchBar"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:clickable="true"
-
-                android:label="@string/hello_world"
-                android:imeOptions="actionSearch"
-                android:iconifiedByDefault="true"
-                android:layout_alignParentEnd="false"></SearchView>
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.CardView>
 
     <!--android:background="@drawable/ripple"-->
     <!--android:stateListAnimator="@anim/anim"-->

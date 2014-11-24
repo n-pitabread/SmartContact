@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,18 +12,25 @@ import android.graphics.Picture;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,7 +48,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
-    private SearchView searchBar;
+
 
     //ArrayAdapter<Account> adapter;
     ArrayAdapter adapter;
@@ -49,6 +57,12 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     String[] values = contactList();
 
     ContentValues contentValues = new ContentValues();
+
+
+    //SearchBar
+    //private CardView card;
+    private SearchView searchBar;
+    RelativeLayout relay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +77,37 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         bindWidget();
         setWidgetEventListener();
-    readContacts();
-
+//        readContacts();
 
 //          displayContacts();
 
+        relay.setOnClickListener(new View.OnClickListener(){
 
+            @Override
+            public void onClick(View v) {
+                Log.d("search", "Workk!!!");
+//                searchBar.setOnQueryTextListener(this);
 
+                    //searchBar.onActionViewCollapsed();
+                    searchBar.onActionViewExpanded();
+                //searchBar.setSubmitButtonEnabled(true);
+
+            }
+        });
+
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("KEY", "0");
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d("KEY", newText);
+                return false;
+            }
+        });
     }
 
     public static void sort(List<String> contactss) {
@@ -86,10 +124,11 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
     public void setWidgetEventListener() {
         Collections.sort(contacts, new FirstNameComparator());
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contactList());
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
         listView.setAdapter(adapter);
+
         // ListView Item Click Listener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -112,11 +151,37 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
             }
         });
+
+        //Scroll Listening
+        listView.setOnScrollListener(new AbsListView.OnScrollListener(){
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {}
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem,
+                                 int visibleItemCount, int totalItemCount) {
+
+                Log.d("first", "First: "+firstVisibleItem);
+                Log.d("visible", "VISIBLE: "+visibleItemCount);
+                Log.d("total", "total: "+totalItemCount);
+
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+                Log.d("last", "last: "+lastInScreen);
+//                if((lastInScreen == totalItemCount) && !(loadingMore)){
+//
+//                }
+            }
+        });
+
     }
 
     public void bindWidget() {
         NoContact = (TextView) findViewById(R.id.NoContact);
         listView = (ListView) findViewById(R.id.android_list);
+        //card  = (CardView) findViewById(R.id.card_view);
+        relay = (RelativeLayout) findViewById(R.id.search);
+        searchBar = (SearchView) findViewById(R.id.searchButton);
         if (values.length != 0)
             NoContact.setVisibility(View.INVISIBLE);
     }
