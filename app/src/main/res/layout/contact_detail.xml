@@ -7,84 +7,79 @@
     tools:context="com.pieronex.smartcontact.DetailContactActivity"
     android:longClickable="false">
 
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="false"
-        android:textAlignment="viewEnd"
-        android:id="@+id/layout">
-
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:textAlignment="viewEnd"
+                android:id="@+id/layout">
 
 
-        <com.pieronex.smartcontact.ParallaxImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:id="@+id/cover"
-            android:background="@drawable/ic_contact_picture_180_holo_light"/>
 
-        <com.pieronex.smartcontact.CircleImageView
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:id="@+id/profile_pic"
-            android:src="@drawable/ic_launcher"
-            android:layout_marginTop="140dp"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="img"
-            android:baselineAlignBottom="false"
-            android:background="@android:color/transparent"/>
+                <com.pieronex.smartcontact.ParallaxImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/cover"
+                    android:background="@drawable/ic_contact_picture_180_holo_light"/>
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/cover"
-            android:layout_marginTop="100dp"
-            android:textSize="30dp"
-            android:text="@string/contact_name"/>
+                <com.pieronex.smartcontact.CircleImageView
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:id="@+id/profile_pic"
+                    android:src="@drawable/ic_launcher"
+                    android:layout_marginTop="140dp"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="img"
+                    android:baselineAlignBottom="false"
+                    android:background="@android:color/transparent"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/nickname"
-            android:layout_centerHorizontal="true"
-            android:textSize="24dp"
-            android:text="@string/contact_nickname"
-            android:layout_below="@id/name"/>
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/cover"
+                    android:layout_marginTop="100dp"
+                    android:textSize="30dp"
+                    android:text="@string/contact_name"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/phoneNo"
-            android:layout_centerHorizontal="true"
-            android:textSize="20dp"
-            android:text="@string/phone_no"
-            android:layout_below="@id/nickname"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/nickname"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="24dp"
+                    android:text="@string/contact_nickname"
+                    android:layout_below="@id/name"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tags"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="25dp"
-            android:textSize="20dp"
-            android:text="@string/tags"
-            android:layout_below="@id/phoneNo"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/phoneNo"
+                    android:layout_centerHorizontal="true"
+                    android:textSize="20dp"
+                    android:text="@string/phone_no"
+                    android:layout_below="@id/nickname"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tags"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="25dp"
+                    android:textSize="20dp"
+                    android:text="@string/tags"
+                    android:layout_below="@id/phoneNo"/>
+
+            </RelativeLayout>
+
+            <!--<RecyclerView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/recycleView"-->
+                <!--android:scrollbars="vertical">-->
 
 
-    </RelativeLayout>
-
-    <!--<RecyclerView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/recycleView">-->
-        <!--android:scrollbars="vertical">-->
-    <!--</RecyclerView>-->
-
+            <!--</RecyclerView>-->
 
 </ScrollView>
-
-
-
-
