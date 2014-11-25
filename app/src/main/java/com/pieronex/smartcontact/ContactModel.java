@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by win.thitiwat on 11/25/2014.
  */
-public class ContactModel implements GetDatabaseInfo{
+public class ContactModel {
     static List<Account> accounts = null;
     private static final String QUERY_SORTED_DISPLAYNAME = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
@@ -24,20 +24,25 @@ public class ContactModel implements GetDatabaseInfo{
         return accounts;
     }
 
-    public static void loadAccounts(ContentResolver contentResolver) {
+
+    /*This method is for retrieving data from phone's DataBase */
+    /* This method will retrieve displayName, phoneNo, and id's person*/
+    public static void loadAccounts(ContentResolver mContentResolver) {
+        /*Declaration variable */
+
+        /**/
         accounts = new ArrayList<Account>();
         String mId, mPhoneNo, mGivenName;
-        ContentResolver cr = contentResolver;
+        ContentResolver contentResolver = mContentResolver;
 
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, QUERY_SORTED_DISPLAYNAME );
+        Cursor cursor = mContentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, QUERY_SORTED_DISPLAYNAME );
 
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 mId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 mGivenName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
                 if (Integer.parseInt(cursor.getString( cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    Cursor phoneCursor = cr.query(
+                    Cursor phoneCursor = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
@@ -46,10 +51,10 @@ public class ContactModel implements GetDatabaseInfo{
                         mPhoneNo = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                         accounts.add(new Account(mGivenName, mPhoneNo, mId, contentResolver));
                     }
-
                     phoneCursor.close();
                 }
             }
+
         }
     }
 
@@ -61,24 +66,9 @@ public class ContactModel implements GetDatabaseInfo{
             {
                 accountList.add(account);
             }
+
         }
     }
 
-    @Override
-    public List<String> getEmailFromDB(ContentResolver contentResolver) {
-        return null;
 
-    }
-
-    @Override
-    public static String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor) {
-
-        return cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-    }
-
-    @Override
-    public String getPhoneNoFromDB(ContentResolver contentResolver, Cursor cursor) {
-        return null;
-    }
 }

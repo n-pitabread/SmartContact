@@ -27,13 +27,13 @@ import android.content.ContentValues;
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
-public class Account extends  Activity implements Parcelable , GetDatabaseInfo{//extends Observable{
-    private String displayName = "";//
-    private String phoneNo = "";//
-    private String email = "";//
-    private String address = "";//
-    private String organization = "";//
-    private String id = "";//
+public class Account extends  Activity implements Parcelable {//extends Observable{
+    private String displayName ;//
+    private String phoneNo ;//
+    private String email ;//
+    private String address ;//
+    private String organization ;//
+    private String id ;//
     private ArrayList<String> tags;
     private ContentResolver contentResolver;//
 
@@ -66,8 +66,8 @@ public class Account extends  Activity implements Parcelable , GetDatabaseInfo{/
         return tags;
     }
 
-    @Override
-    public List<String> getEmailFromDB(ContentResolver contentResolver) {
+
+    public List<String> getEmail(ContentResolver mContenResolver){
         ArrayList<String> emails = new ArrayList<String>();
         Cursor emailCur = contentResolver.query(
                 ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -87,15 +87,7 @@ public class Account extends  Activity implements Parcelable , GetDatabaseInfo{/
         return emails;
     }
 
-    @Override
-    public String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor) {
-        return null;
-    }
 
-    @Override
-    public String getPhoneNoFromDB(ContentResolver contentResolver, Cursor cursor) {
-        return null;
-    }
 
 
     public void setDisplayName(String displayName) {
@@ -132,6 +124,10 @@ public class Account extends  Activity implements Parcelable , GetDatabaseInfo{/
 
     public void setOrganization(String organization) {
         this.organization = organization;
+    }
+
+    public String toString(){
+        return displayName +"\n\t"+ "Tel. " + phoneNo + "\n";
     }
 
     /*Constructor for receive Object in Parcel data type*/
