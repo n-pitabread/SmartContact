@@ -41,6 +41,7 @@ public class ContactModel {
             while (cursor.moveToNext()) {
                 mId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 mGivenName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
                 if (Integer.parseInt(cursor.getString( cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     Cursor phoneCursor = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -54,7 +55,6 @@ public class ContactModel {
                     phoneCursor.close();
                 }
             }
-
         }
     }
 
@@ -66,7 +66,6 @@ public class ContactModel {
             {
                 accountList.add(account);
             }
-
         }
     }
 

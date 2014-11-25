@@ -85,8 +85,9 @@
         android:paddingRight="22dp"
         android:fadeScrollbars="false"
         android:smoothScrollbar="true"
-        android:footerDividersEnabled="true"
+        android:dividerHeight="4dp"
         android:headerDividersEnabled="true"
+        android:footerDividersEnabled="true"
         android:longClickable="true"
         />
 
