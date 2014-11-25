@@ -17,5 +17,10 @@
     <string name="title_activity_detail_contact">title</string>
     <string name="title_activity_edit_contact">EditContactActivity</string>
     <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="title_activity_filter_search">FilterSearch</string>
+    <string name="radio1">DisplayName</string>
+    <string name="radio2">Nickname</string>
+    <string name="radio3">Phone Number</string>
+    <string name="radio4">Tags</string>
 
 </resources>
