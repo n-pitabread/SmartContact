@@ -15,6 +15,7 @@ import android.media.audiofx.AcousticEchoCanceler;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -125,14 +127,55 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             public void onRefresh() {
                 swipecontainer.setRefreshing(true);
                 Log.d("Swipe", "Refreshing Number");
-                (new Handler()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Looper.prepare();
+                        ContactModel.loadAccounts(getContentResolver());
+
+                /*
+                (new Handler()).(new Runnable() {
+                    @Override
+                    public void run() {
                         ContactModel.loadAccounts(getContentResolver());
                         ContactModel.applyFilter(adapter, "");
-                        swipecontainer.setRefreshing(false);
                     }
-                }, 0);
+                });*/
+                        runOnUiThread(new Runnable() {
+                            public void run() {
+                                //update the grid here
+                                ContactModel.applyFilter(adapter, "");
+                                swipecontainer.setRefreshing(false);
+
+                            }
+                        });
+                        Looper.myLooper().quit();
+                    }
+                }).start();
+
+
+            }
+        });
+
+        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                boolean enable = false;
+                if(listView != null && listView.getChildCount() > 0){
+                    // check if the first item of the list is visible
+                    boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                    // check if the top of the first item is visible
+                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+                    // enabling or disabling the refresh layout
+                    enable = firstItemVisible && topOfFirstItemVisible;
+                }
+                swipecontainer.setEnabled(enable);
             }
         });
 
@@ -158,6 +201,8 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         NoContact = (TextView) findViewById(R.id.NoContact);
         listView = (ListView) findViewById(R.id.android_list);
         swipecontainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        swipecontainer.setColorSchemeResources(R.color.green);
+        swipecontainer.setEnabled(false);
         listView.setLongClickable(true);
 
         //card  = (CardView) findViewById(R.id.card_view);
