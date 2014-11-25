@@ -77,6 +77,9 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         //accountModel.addObserver(this); // Add this activity to be the observer of the model
 
         bindWidget();
+
+        displayContacts();
+
         setWidgetEventListener();
         //readContacts();
 
@@ -99,18 +102,17 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("KEY", "0");
+                ContactModel.applyFilter(adapter, query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d("KEY", newText);
+                ContactModel.applyFilter(adapter, newText);
                 return false;
             }
         });
-
-
-        displayContacts();
 
     }
 
@@ -131,6 +133,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         NoContact = (TextView) findViewById(R.id.NoContact);
         listView = (ListView) findViewById(R.id.android_list);
+        listView.setLongClickable(true);
         //card  = (CardView) findViewById(R.id.card_view);
         relay = (RelativeLayout) findViewById(R.id.search);
         searchBar = (SearchView) findViewById(R.id.searchButton);
@@ -148,28 +151,42 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             }
         });
 
-
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
+        adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
         listView.setAdapter(adapter);
         // ListView Item Click Listener
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
+//                intent.putExtra("account", accountModel.get(position));//new Account("1","2","3","4","5","6","7"));
+////                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
+//
+//                startActivity(intent);
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,String.valueOf(accountModel.get(position).getId()));
+                i.setData(uri);
+                startActivity(i);
+                return true;
+            }
+        });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // ListView Clicked item index
-//                int itemPosition = position;
-                // ListView Clicked item value
-//                String itemValue = (String) listView.getItemAtPosition(position);
-                // Show Alert
-//                Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
-                //DetailContactActivity info = new DetailContactActivity(itemValue);
-               // listView.setItemChecked(position, true);
-                Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
-                intent.putExtra("account", accountModel.get(position));//new Account("1","2","3","4","5","6","7"));
-//                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
+//               Uri contact = Uri.withAppendedPath(
+//                       ContactsContract.Contacts.CONTENT_URI, String.valueOf(data.getLong(ContactsQuery.ID)));
+                //-------------------------------------
 
-                startActivity(intent);
+                String uri = "tel:" + accountModel.get(position).getPhoneNo();
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
+                startActivity(callIntent);
+
+                // -----------------------------------------
+//                Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_VCARD_URI);
+//                startActivity(intent);
 
             }
         });
@@ -209,49 +226,13 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
 
     private void displayContacts() {
-        //  ContactsContract.CommonDataKinds.Photo
-        String mEmail, mId, mDisplayName, mPhoneNo, mLastTimeContacted, mNickName, mMiddleName;
-        String mGivenName, mFamilyName, mPrefix, mSuffix, mPicture;
-        String sortOrder = ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
+        accountModel = new ArrayList<Account>(ContactModel.getAccounts(getContentResolver()));
 
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, sortOrder);
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                mLastTimeContacted = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.LAST_TIME_CONTACTED));
-//                mPicture = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-//                Log.d("image String", mPicture);
-                if (Integer.parseInt(cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{mId}, null);
-                    while (pCur.moveToNext()) {
-                        mPhoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //mEmail = pCur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.CONTACT_ID));
-                        //Log.e("Email", mEmail);
-                        contacts.add(mGivenName + ",   "+ mPhoneNo);
-                        accountModel.add(new Account(mGivenName, mPhoneNo));
-                        Uri picturePerson = getPhotoUriFromID(mId);
-                        mPicture = picturePerson.toString();
-                        Log.d("picture", mPicture);
-                        //Toast.makeText(MainActivity.this, "Name: " + mGivenName + ", lastContact No: " + mLastTimeContacted, Toast.LENGTH_SHORT).show();
-                    }
-                    pCur.close();
-
-
-
-                }
-            }
-        }
     }
 
 
 //    private void retrieveContactPhoto() {
+
 //
 //        Bitmap photo = null;
 //
@@ -301,7 +282,6 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     public void update(Observable observable, Object data) {
 
     }
-
 
     @Override
     public void onClick(View v) {
@@ -556,94 +536,12 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
                     }
                     //cr.query(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
                     contacts.add(mGivenName);
-                    accountModel.add(new Account(mGivenName, mFamilyName, "middleName", "mNickName", mPhoneNo, mEmail, "Pic"));
+//                    accountModel.add(new Account(mGivenName, mFamilyName, "middleName", "mNickName", mPhoneNo, mEmail, "Pic"));
 
                 }
 
             }
         }
     }
+
 }
-
-///// ---- Account Controller Method Part --
-///*************************************************************///
-//    getAccountLastName()
-//    setAccountLastName(String accountLastName)
-//    getAccountDisplayName()
-//    setAccountDisplayName(String accountDisplayName)
-//    getAccountPhoneNo()
-//    setAccountPhoneNo(String accountPhoneNo)
-//    getAccountEMail()
-//    setAccountEMail(String accountEMail)
-//    getAccountPictureProfile()
-//    setAccountPictureProfile(Picture accountPictureProfile)
-///*************************************************************///
-
-//
-//    public String getAccountFirstName() {
-//        return accountModel.getFirstName();
-//    }
-//
-//    public void setAccountFirstName(String accountFirstName) {
-//        accountModel.setFirstName(accountFirstName);
-//    }
-//
-//    public String getAccountLastName() {
-//        return accountModel.getLastName();
-//    }
-//
-//    public void setAccountLastName(String accountLastName) {
-//        accountModel.setLastName(accountLastName);
-//    }
-//
-//    public String getAccountDisplayName() {
-//        return accountModel.getDisplayName();
-//    }
-//
-//    public void setAccountDisplayName(String accountDisplayName) {
-//        accountModel.setDisplayName(accountDisplayName);
-//    }
-//
-//    public String getAccountPhoneNo() {
-//        return accountModel.getPhoneNo();
-//    }
-//
-//    public void setAccountPhoneNo(String accountPhoneNo) {
-//        accountModel.setPhoneNo(accountPhoneNo);
-//    }
-//
-//    public String getAccountEMail() {
-//        return accountModel.getEmail();
-//    }
-//
-//    public void setAccountEMail(String accountEMail) {
-//        accountModel.setEmail(accountEMail);
-//    }
-//
-//    public Picture getAccountPictureProfile() {
-//        return accountModel.getPictureProfile();
-//    }
-//
-//    public void setAccountPictureProfile(Picture accountPictureProfile) {
-//        accountModel.setPictureProfile(accountPictureProfile);
-//    }
-
-//private class AccountAdapter extends ArrayAdapter<Account>{
-//    public AccountAdapter() {
-//        super( MainActivity.this, R.layout.contact_detail, accountModel);
-//    }
-//
-//    @Override
-//    public View getView(int position, View view, ViewGroup parent){
-//        if(view == null)
-//            view = getLayoutInflater().inflate(R.layout.contact_detail, parent, false);
-//        Account currentAccount = accountModel.get(position);
-//        TextView name = (TextView) view.findViewById(R.id.name);
-//        name.setText(currentAccount.getFirstName());
-//
-//        return view;
-//    }
-//}
-
-
-

@@ -1,18 +1,33 @@
 package com.pieronex.smartcontact;
 
+import android.app.Activity;
+import android.content.ContentResolver;
+
+import android.database.Cursor;
 import android.graphics.Picture;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
-
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.provider.ContactsContract;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 import java.util.Observable;
+import java.util.Observer;
+//---------
+
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
-public class Account implements Parcelable{//extends Observable{
+public class Account extends Activity implements Parcelable{//extends Observable{
     private int stat_of_search = 0;
     private String firstName = "";
     private String lastName = "";
@@ -22,38 +37,54 @@ public class Account implements Parcelable{//extends Observable{
     private String phoneNo = "";
     private String email = "";
     private String pictureProfile;
+    private String address = "";
+    private String organization = "";
+    private String id = "";
     private ArrayList<String> tags;
+    private ContentResolver contentResolver;
 
-
-
-    public Account(String _firstName, String _lastName , String _middleName ,String _nickName, String _phoneNo, String _email, String _pictureProfile){
-        firstName = _firstName;
-        lastName = _lastName;
-        middleName = _middleName;
-        nickName = _nickName;
-        phoneNo = _phoneNo;
-        email = _email;
-        pictureProfile = _pictureProfile;
+        // display, phoneNo, address, organization
+    public Account(String mDisplayName, String mPhoneNo, String mEmail, String mAddress, String mOrganization, String mId, ContentResolver mcontentResolver){
+        displayName = mDisplayName;
+        phoneNo = mPhoneNo;
+        address = mAddress;
+        organization = mOrganization;
+        id = mId;
+        email = mEmail;
+        contentResolver = mcontentResolver;
     }
 
-    public Account(String mFirstName, String mPhoneNo){
+//    public Account(String _firstName, String _lastName , String _middleName ,String _nickName, String _phoneNo, String _email, String _pictureProfile){
+//        firstName = _firstName;
+//        lastName = _lastName;
+//        middleName = _middleName;
+//        nickName = _nickName;
+//        phoneNo = _phoneNo;
+//        email = _email;
+//        pictureProfile = _pictureProfile;
+//    }
 
-        this(mFirstName, mPhoneNo, "1", "2", "3", "4", "5");
+    public Account(String mFirstName, String mPhoneNo, String mId, ContentResolver mcontentResolver){
+
+        this(mFirstName, mPhoneNo, "0","1", "2", mId, mcontentResolver);
     }
 
 
 
     public String getDisplayName() {
+       // ContentResolver cr = contentResolver;
+//        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+//                null, null, null, null);
+//        if (cur.getCount() > 0) {
+//            while (cur.moveToNext())
+//                displayName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+//        }
         return displayName;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
 
-    public String getLastName() {
-        return lastName;
-    }
+
+
 
     public String getPhoneNo() {
         return phoneNo;
@@ -63,15 +94,35 @@ public class Account implements Parcelable{//extends Observable{
         return tags;
     }
 
-    public String getEmail() {
-        return email;
+    public List<String> getEmail(ContentResolver contentResolver) {
+        ArrayList<String> result = new ArrayList<String>();
+        Cursor emailCur = contentResolver.query(
+                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                new String[]{id}, null);
+
+
+        while (emailCur.moveToNext()) {
+            // This would allow you get several email addresses
+            // if the email addresses were stored in an array
+            String mEmail = emailCur.getString(
+                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            String emailType = emailCur.getString(
+                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+            result.add(mEmail);
+            //account.setEmail(mEmail);
+            // System.out.println("Email " + mEmail + " Email Type : " + emailType);
+//                    }
+        }
+        emailCur.close();
+        return result;
     }
 
     public String getPictureProfile() {
         return pictureProfile;
     }
 
-    public void setFirstName(String firstName) { this.firstName = firstName; }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
@@ -101,26 +152,38 @@ public class Account implements Parcelable{//extends Observable{
         this.stat_of_search = stat_of_search;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
-
+//String mDisplayName, String mPhoneNo, String mEmail, String mAddress, String mOrganization, String mId)
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-       dest.writeStringArray(new String[]{firstName, lastName, middleName, nickName, phoneNo, email, pictureProfile});
+       dest.writeStringArray(new String[]{displayName, phoneNo, email, address, organization, id});// , email, pictureProfile});
+        //dest.writeArray(new Object[]{contentResolver});
     }
 
     public Account(Parcel in){
-        String[] data = new String[7];
+        String[] data = new String[6];
         in.readStringArray(data);
-        firstName = data[0];
-        lastName = data[1];
-        middleName = data[2];
-        nickName = data[3];
-        phoneNo =data[4];
-        email = data[5];
-        pictureProfile = data[6];
+        displayName = data[0];
+        phoneNo = data[1];
+        email = data[2];
+        address = data[3];
+        organization =data[4];
+        id = data[5];
+
+        //Objects[] data2 = new Objects[1];
+        //in.readArray(data2);
+      //  pictureProfile = data[6];
 
     }
 
@@ -133,4 +196,26 @@ public class Account implements Parcelable{//extends Observable{
             return new Account[size];
         }
     };
+
+    public String toString() {
+        return displayName + " "  + "\n\t"+ "- No: "+ phoneNo + "\n";
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+
 }

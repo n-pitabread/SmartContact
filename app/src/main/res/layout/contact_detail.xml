@@ -46,20 +46,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/nickname"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="24dp"
-                    android:text="@string/contact_nickname"
-                    android:layout_below="@id/name"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:id="@+id/phoneNo"
                     android:layout_centerHorizontal="true"
                     android:textSize="20dp"
                     android:text="@string/phone_no"
-                    android:layout_below="@id/nickname"/>
+                    android:layout_below="@id/name"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -70,6 +61,17 @@
                     android:textSize="20dp"
                     android:text="@string/tags"
                     android:layout_below="@id/phoneNo"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/e_mail"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="25dp"
+                    android:textSize="20dp"
+                    android:text="@string/e_mail"
+                    android:layout_below="@id/tags"/>
+
 
             </RelativeLayout>
 

@@ -4,35 +4,12 @@
     tools:context="com.pieronex.smartcontact.EditContactActivity"
     android:id="@+id/wrapper">
 
-    <FrameLayout
-        android:id="@+id/contactType"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/darkblue"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/type"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
-            android:layout_gravity="right"/>
-
-
-    </FrameLayout>
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:id="@+id/name_editText"
         android:hint="@string/contact_name"
-        android:layout_below="@id/contactType"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
@@ -41,8 +18,8 @@
     <com.pieronex.smartcontact.CircleImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/picProfile"
         android:src="@drawable/ic_launcher"
-        android:layout_below="@id/contactType"
         android:layout_toRightOf="@id/name_editText"/>
 
     <EditText
@@ -78,15 +55,10 @@
         android:layout_marginLeft="10dp"
         android:layout_below="@id/e_mail"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tag_topic"
-        android:text="Tags"
-        android:layout_marginLeft="10dp"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        style="?android:listSeparatorTextViewStyle"
-        android:layout_below="@id/address"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_alignParentBottom="true"
+        android:text="Save"/>
 
 </RelativeLayout>

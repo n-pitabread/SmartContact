@@ -45,7 +45,7 @@
 
             <SearchView
                 android:id="@+id/searchButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:label="@string/hello_world"
@@ -74,6 +74,9 @@
         android:fadeScrollbars="false"
         android:smoothScrollbar="true"
         android:layout_below="@id/card_view"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:longClickable="true"
         />
 
     <!--android:background="@drawable/ripple"-->

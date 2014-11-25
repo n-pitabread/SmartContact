@@ -8,6 +8,7 @@
     <string name="contact_nickname">(nickname)</string>
     <string name="phone_no">+6681-234-5678</string>
     <string name="tags">#.....</string>
+    <string name="e_mail">Email: </string>
     <string name="e_mail_title">E-mail</string>
     <string name="address_title">Address</string>
     <string name="group_title">Group</string>
