@@ -29,7 +29,7 @@
         android:textSize="20sp"/>
 
     <RadioButton
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nickname"
@@ -38,7 +38,7 @@
         android:textSize="20sp"/>
 
     <RadioButton
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/phonenumber"
@@ -47,12 +47,21 @@
         android:textSize="20sp"/>
 
     <RadioButton
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/email_filter"
+        android:layout_below="@id/phonenumber"
+        android:text="@string/radio4"
+        android:textSize="20sp"/>
+
+    <RadioButton
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/tag"
-        android:layout_below="@id/phonenumber"
-        android:text="@string/radio4"
+        android:layout_below="@id/email_filter"
+        android:text="@string/radio5"
         android:textSize="20sp"/>
 
     </RadioGroup>

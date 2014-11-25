@@ -21,6 +21,7 @@
     <string name="radio1">DisplayName</string>
     <string name="radio2">Nickname</string>
     <string name="radio3">Phone Number</string>
-    <string name="radio4">Tags</string>
+    <string name="radio4">E-mail</string>
+    <string name="radio5">Tags</string>
 
 </resources>
