@@ -27,7 +27,7 @@ import android.content.ContentValues;
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
-public class Account extends Activity implements Parcelable{//extends Observable{
+public class Account extends  Activity implements Parcelable , GetDatabaseInfo{//extends Observable{
     private String displayName = "";//
     private String phoneNo = "";//
     private String email = "";//
@@ -37,26 +37,17 @@ public class Account extends Activity implements Parcelable{//extends Observable
     private ArrayList<String> tags;
     private ContentResolver contentResolver;//
 
-        // display, phoneNo, address, organization
-    public Account(String mDisplayName, String mPhoneNo, String mEmail, String mAddress, String mOrganization, String mId, ContentResolver mcontentResolver){
+
+    public Account(String mDisplayName, String mPhoneNo, String mEmail, String mAddress, String mOrganization, String mId, ContentResolver mContentResolver){
         displayName = mDisplayName;
         phoneNo = mPhoneNo;
         address = mAddress;
         organization = mOrganization;
         id = mId;
         email = mEmail;
-        contentResolver = mcontentResolver;
+        contentResolver = mContentResolver;
     }
 
-//    public Account(String _firstName, String _lastName , String _middleName ,String _nickName, String _phoneNo, String _email, String _pictureProfile){
-//        firstName = _firstName;
-//        lastName = _lastName;
-//        middleName = _middleName;
-//        nickName = _nickName;
-//        phoneNo = _phoneNo;
-//        email = _email;
-//        pictureProfile = _pictureProfile;
-//    }
 
     public Account(String mFirstName, String mPhoneNo, String mId, ContentResolver mcontentResolver){
 
@@ -75,30 +66,36 @@ public class Account extends Activity implements Parcelable{//extends Observable
         return tags;
     }
 
-//    public List<String> getEmail(ContentResolver contentResolver) {
-//        ArrayList<String> result = new ArrayList<String>();
-//        Cursor emailCur = contentResolver.query(
-//                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-//                null,
-//                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-//                new String[]{id}, null);
-//
-//
-//        while (emailCur.moveToNext()) {
-//            // This would allow you get several email addresses
-//            // if the email addresses were stored in an array
-//            String mEmail = emailCur.getString(
-//                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-//            String emailType = emailCur.getString(
-//                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-//            result.add(mEmail);
-//            //account.setEmail(mEmail);
-//            // System.out.println("Email " + mEmail + " Email Type : " + emailType);
-////                    }
-//        }
-//        emailCur.close();
-//        return result;
-//    }
+    @Override
+    public List<String> getEmailFromDB(ContentResolver contentResolver) {
+        ArrayList<String> emails = new ArrayList<String>();
+        Cursor emailCur = contentResolver.query(
+                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+                null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+                new String[]{this.getId()}, null);
+
+        while (emailCur.moveToNext()) {
+            // This would allow you get several email addresses
+            // if the email addresses were stored in an array
+            String mEmail = emailCur.getString(
+                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+            emails.add(mEmail);
+
+        }
+        emailCur.close();
+        return emails;
+    }
+
+    @Override
+    public String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor) {
+        return null;
+    }
+
+    @Override
+    public String getPhoneNoFromDB(ContentResolver contentResolver, Cursor cursor) {
+        return null;
+    }
 
 
     public void setDisplayName(String displayName) {
@@ -121,15 +118,22 @@ public class Account extends Activity implements Parcelable{//extends Observable
         this.id = id;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getAddress() {
+        return address;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-       dest.writeStringArray(new String[]{displayName, phoneNo, email, address, organization, id});
+    public void setAddress(String address) {
+        this.address = address;
     }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
     /*Constructor for receive Object in Parcel data type*/
     public Account(Parcel in){
         String[] data = new String[6];
@@ -148,6 +152,21 @@ public class Account extends Activity implements Parcelable{//extends Observable
         setId (data[5]);
     }
 
+
+    ////////////////////////////////////////////////////////////
+    ///* This below part is for making Account as Parcelable  */
+    ///* So that Intent can send an Object through parameter  */
+    ////////////////////////////////////////////////////////////
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[]{displayName, phoneNo, email, address, organization, id});
+    }
+
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Account createFromParcel(Parcel in) {
             return new Account(in);
@@ -157,26 +176,5 @@ public class Account extends Activity implements Parcelable{//extends Observable
             return new Account[size];
         }
     };
-
-    public String toString() {
-        return displayName + " "  + "\n\t"+ "- No: "+ phoneNo + "\n";
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
 
 }
