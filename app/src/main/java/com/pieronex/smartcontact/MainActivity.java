@@ -44,24 +44,70 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
 
     //SearchBar
     private SearchView mSearchBar;
-    RelativeLayout mRelativeLayout;
+    private RelativeLayout mRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //accountModel = new ArrayList<Account>();
-        //accountModel.addObserver(this); // Add this activity to be the observer of the model
-
-        bindWidget();
-
-        displayContacts();
-
-        setWidgetEventListener();
-        //readContacts();
+        bindWidget();//Init Activity Element
+        displayContacts();//show Contact
+        setWidgetEventListener();//Set Widget
+    }
 
 
+
+
+    public void bindWidget() {
+        NoContact_LB = (TextView) findViewById(R.id.NoContact); //textView Show when No Contact found
+
+        mListView = (ListView) findViewById(R.id.android_list);//ListView
+        mListView.setLongClickable(true);
+
+        mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);//SwipeRefreshLayout
+        mSwipeContainer.setColorSchemeResources(R.color.darkblue);
+        mSwipeContainer.setEnabled(false);
+
+
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.search);//RelativeLayout SearchBar
+
+        mSearchBar = (SearchView) findViewById(R.id.searchButton);//SearchView SearchBar
+        mSearchBar.onActionViewCollapsed();
+        if (values.length != 0)
+            NoContact_LB.setVisibility(View.INVISIBLE);
+    }
+
+    public void setWidgetEventListener() {
+        adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
+        // Assign adapter to ListView
+        mListView.setAdapter(adapter);
+        // ListView Item Click Listener
+
+        //Long Click item on list
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,String.valueOf(accountModel.get(position).getId()));
+                i.setData(uri);
+                startActivity(i);
+                return true;
+            }
+        });
+
+        //When Click Item on list
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String uri = "tel:" + accountModel.get(position).getPhoneNo();
+                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
+                startActivity(callIntent);
+            }
+        });
+
+        //make relative layout become searchbar
         mRelativeLayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -77,6 +123,7 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             }
         });
 
+        //Get String In searchBar to find Contact
         mSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -93,6 +140,7 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             }
         });
 
+        //When Refresh Page
         mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
 
@@ -102,24 +150,14 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
                         Looper.prepare();
                         ContactModel.loadAccounts(getContentResolver());
 
-                /*
-                (new Handler()).(new Runnable() {
-                    @Override
-                    public void run() {
-                        ContactModel.loadAccounts(getContentResolver());
-                        ContactModel.applyFilter(adapter, "");
-                    }
-                });*/
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 //update the grid here
                                 ContactModel.applyFilter(adapter, "");
                                 mSwipeContainer.setRefreshing(false);
-
                             }
                         });
                         Looper.myLooper().quit();
@@ -130,6 +168,7 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             }
         });
 
+        //Check Scroll on Top to enable mSwipeContainer
         mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -150,135 +189,12 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
                 mSwipeContainer.setEnabled(enable);
             }
         });
-
     }
-
-
-
-
-    public void bindWidget() {
-
-        NoContact_LB = (TextView) findViewById(R.id.NoContact);
-        mListView = (ListView) findViewById(R.id.android_list);
-        mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
-        mSwipeContainer.setColorSchemeResources(R.color.darkblue);
-        mSwipeContainer.setEnabled(false);
-        mListView.setLongClickable(true);
-
-        //card  = (CardView) findViewById(R.id.card_view);
-        mRelativeLayout = (RelativeLayout) findViewById(R.id.search);
-        mSearchBar = (SearchView) findViewById(R.id.searchButton);
-        mSearchBar.onActionViewCollapsed();
-        if (values.length != 0)
-            NoContact_LB.setVisibility(View.INVISIBLE);
-    }
-
-    public void setWidgetEventListener() {
-
-
-
-        adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
-//        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
-        // Assign adapter to ListView
-        mListView.setAdapter(adapter);
-        // ListView Item Click Listener
-
-        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
-//                intent.putExtra("account", accountModel.get(position));//new Account("1","2","3","4","5","6","7"));
-////                intent.putExtra("account", new Account("1","2","3","4","5","6","7"));
-//
-//                startActivity(intent);
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,String.valueOf(accountModel.get(position).getId()));
-                i.setData(uri);
-                startActivity(i);
-                return true;
-            }
-        });
-//HERE!!!!
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                String uri = "tel:" + accountModel.get(position).getPhoneNo();
-                Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
-                startActivity(callIntent);
-
-                // -----------------------------------------
-//                Intent intent = new Intent(Intent.ACTION_VIEW, ContactsContract.Contacts.CONTENT_VCARD_URI);
-//                startActivity(intent);
-
-            }
-        });
-    }
-
-
-    private Uri getPhotoUriFromID(String id) {
-        try {
-            Cursor cur = getContentResolver()
-                    .query(ContactsContract.Data.CONTENT_URI,
-                            null,
-                            ContactsContract.Data.CONTACT_ID
-                                    + "="
-                                    + id
-                                    + " AND "
-                                    + ContactsContract.Data.MIMETYPE
-                                    + "='"
-                                    + ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE
-                                    + "'", null, null);
-            if (cur != null) {
-                if (!cur.moveToFirst()) {
-                    return null; // no photo
-                }
-            } else {
-                return null; // error in cursor process
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        Uri person = ContentUris.withAppendedId(
-                ContactsContract.Contacts.CONTENT_URI, Long.parseLong(id));
-        return Uri.withAppendedPath(person,
-                ContactsContract.Contacts.Photo.CONTENT_DIRECTORY);
-
-    }
-
 
     private void displayContacts() {
         accountModel = new ArrayList<Account>(ContactModel.getAccounts(getContentResolver()));
 
     }
-
-
-//    private void retrieveContactPhoto() {
-
-//
-//        Bitmap photo = null;
-//
-//        try {
-//            InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(getContentResolver(),
-//                    ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, new Long(contactID)));
-//
-//            if (inputStream != null) {
-//                photo = BitmapFactory.decodeStream(inputStream);
-//                ImageView imageView = (ImageView) findViewById(R.id.img_contact);
-//                imageView.setImageBitmap(photo);
-//            }
-//
-//            assert inputStream != null;
-//            inputStream.close();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
