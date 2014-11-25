@@ -10,8 +10,6 @@ import android.widget.ImageView;
 
 /**
  * Created by PieroNEX on 11/21/14 AD.
- *
- * Custom View For Circle Image
  */
 public class CircleImageView extends ImageButton{
 
