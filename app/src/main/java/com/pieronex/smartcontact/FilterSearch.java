@@ -10,8 +10,11 @@ import android.widget.RadioGroup;
 
 public class FilterSearch extends Activity {
 
-    private RadioButton RadioFilterButton;
-    private RadioGroup RadioFilterGroup;
+    private RadioButton RadioName;
+    private RadioButton RadioNickname;
+    private RadioButton Radiophone;
+    private RadioButton Radiotag;
+    private RadioButton Radiomail;
 
 
     @Override
@@ -22,8 +25,12 @@ public class FilterSearch extends Activity {
     }
 
     public void bindwidget(){
-        RadioFilterGroup = (RadioGroup)findViewById(R.id.radio_filter);
-    }
+        RadioName = (RadioButton)findViewById(R.id.displayname);
+        RadioNickname = (RadioButton)findViewById(R.id.nickname);
+        Radiophone = (RadioButton)findViewById(R.id.phonenumber);
+        Radiomail = (RadioButton)findViewById(R.id.email_filter);
+        Radiotag = (RadioButton)findViewById(R.id.tag);
+     }
 
 
     @Override
@@ -42,8 +49,7 @@ public class FilterSearch extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
-            int selectedId = RadioFilterGroup.getCheckedRadioButtonId();
-            RadioFilterButton = (RadioButton)findViewById(selectedId);
+            //DO SOMETHINGS!!!!!!!!!!!
         }
 
         return super.onOptionsItemSelected(item);

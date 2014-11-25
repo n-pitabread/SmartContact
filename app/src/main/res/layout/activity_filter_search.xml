@@ -14,19 +14,16 @@
         android:text="@string/title_activity_filter_search"
         android:textSize="30sp"/>
 
-    <RadioGroup
-        android:layout_marginTop="30dp"
-        android:id="@+id/radio_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/header">
+
 
     <RadioButton
+        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/displayname"
         android:text="@string/radio1"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:layout_below="@id/header"/>
 
     <RadioButton
         android:layout_marginTop="10dp"
@@ -64,6 +61,5 @@
         android:text="@string/radio5"
         android:textSize="20sp"/>
 
-    </RadioGroup>
 
 </RelativeLayout>
