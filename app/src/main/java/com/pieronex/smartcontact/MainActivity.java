@@ -15,6 +15,7 @@ import android.media.audiofx.AcousticEchoCanceler;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,6 +57,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     ArrayAdapter adapter;
     private ListView listView;
     private TextView NoContact;
+    private SwipeRefreshLayout swipecontainer;
     String[] values = contactList();
 
     ContentValues contentValues = new ContentValues();
@@ -71,6 +73,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //        super.onCreate(savedInstanceState);
+
 //        setContentView(R.layout.search);
 
         getActionBar().show();
@@ -115,6 +118,13 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
             }
         });
 
+        swipecontainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d("Refresh", "Yeahhhh");
+            }
+        });
+
     }
 
 
@@ -134,6 +144,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         NoContact = (TextView) findViewById(R.id.NoContact);
         listView = (ListView) findViewById(R.id.android_list);
+        swipecontainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
         listView.setLongClickable(true);
         //card  = (CardView) findViewById(R.id.card_view);
         relay = (RelativeLayout) findViewById(R.id.search);
