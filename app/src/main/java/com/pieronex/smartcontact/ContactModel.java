@@ -71,7 +71,7 @@ public class ContactModel implements GetDatabaseInfo{
     }
 
     @Override
-    public static String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor) {
+    public String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor) {
 
         return cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 

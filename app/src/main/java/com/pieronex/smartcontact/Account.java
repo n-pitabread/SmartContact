@@ -2,38 +2,24 @@ package com.pieronex.smartcontact;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-
 import android.database.Cursor;
-import android.graphics.Picture;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
-import android.content.ContentResolver;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.provider.ContactsContract;
+
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
-//---------
-
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-
 /**
  * Created by win.thitiwat on 11/20/2014.
  */
+
 public class Account extends  Activity implements Parcelable , GetDatabaseInfo{//extends Observable{
-    private String displayName = "";//
-    private String phoneNo = "";//
-    private String email = "";//
-    private String address = "";//
-    private String organization = "";//
-    private String id = "";//
+    private String displayName = "";//name
+    private String phoneNo = "";//phone number
+    private String email = "";//e-mail
+    private String address = "";//address
+    private String organization = "";//organization
+    private String id = "";//id
     private ArrayList<String> tags;
     private ContentResolver contentResolver;//
 

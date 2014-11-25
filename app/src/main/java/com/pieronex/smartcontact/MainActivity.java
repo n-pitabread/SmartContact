@@ -1,20 +1,12 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
-import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Picture;
-import android.media.audiofx.AcousticEchoCanceler;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,29 +15,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
-
-import  com.pieronex.smartcontact.R;
-
 import java.util.Observer;
 
 
@@ -54,32 +34,23 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
-//    private SearchView searchBar;
 
     //ArrayAdapter<Account> adapter;
-    ArrayAdapter adapter;
-    private ListView listView;
-    private TextView NoContact;
-    private SwipeRefreshLayout swipecontainer;
+    private ArrayAdapter adapter;
+    private ListView mListView;
+    private TextView NoContact_LB;
+    private SwipeRefreshLayout mSwipeContainer;
     String[] values = contactList();
 
-    ContentValues contentValues = new ContentValues();
-
-
     //SearchBar
-    //private CardView card;
-    private SearchView searchBar;
-    RelativeLayout relay;
+    private SearchView mSearchBar;
+    RelativeLayout mRelativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        super.onCreate(savedInstanceState);
 
-//        setContentView(R.layout.search);
-
-        getActionBar().show();
         //accountModel = new ArrayList<Account>();
         //accountModel.addObserver(this); // Add this activity to be the observer of the model
 
@@ -91,21 +62,22 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
         //readContacts();
 
 
-        relay.setOnClickListener(new View.OnClickListener(){
+        mRelativeLayout.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Log.d("search", "Workk!!!");
+                //Debug
+                Log.d("search", "Work!!!");
 //                searchBar.setOnQueryTextListener(this);
 
-                    //searchBar.onActionViewCollapsed();
-                    searchBar.onActionViewExpanded();
+                //searchBar.onActionViewCollapsed();
+                mSearchBar.onActionViewExpanded();
                 //searchBar.setSubmitButtonEnabled(true);
 
             }
         });
 
-        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 Log.d("KEY", "0");
@@ -121,11 +93,11 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             }
         });
 
-        swipecontainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
 
             public void onRefresh() {
-                swipecontainer.setRefreshing(true);
+                mSwipeContainer.setRefreshing(true);
                 Log.d("Swipe", "Refreshing Number");
                 new Thread(new Runnable() {
                     @Override
@@ -146,7 +118,7 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
                             public void run() {
                                 //update the grid here
                                 ContactModel.applyFilter(adapter, "");
-                                swipecontainer.setRefreshing(false);
+                                mSwipeContainer.setRefreshing(false);
 
                             }
                         });
@@ -158,7 +130,7 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             }
         });
 
-        listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        mListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -167,15 +139,15 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 boolean enable = false;
-                if(listView != null && listView.getChildCount() > 0){
+                if(mListView != null && mListView.getChildCount() > 0){
                     // check if the first item of the list is visible
-                    boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+                    boolean firstItemVisible = mListView.getFirstVisiblePosition() == 0;
                     // check if the top of the first item is visible
-                    boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+                    boolean topOfFirstItemVisible = mListView.getChildAt(0).getTop() == 0;
                     // enabling or disabling the refresh layout
                     enable = firstItemVisible && topOfFirstItemVisible;
                 }
-                swipecontainer.setEnabled(enable);
+                mSwipeContainer.setEnabled(enable);
             }
         });
 
@@ -186,19 +158,19 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
 
     public void bindWidget() {
 
-        NoContact = (TextView) findViewById(R.id.NoContact);
-        listView = (ListView) findViewById(R.id.android_list);
-        swipecontainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
-        swipecontainer.setColorSchemeResources(R.color.green);
-        swipecontainer.setEnabled(false);
-        listView.setLongClickable(true);
+        NoContact_LB = (TextView) findViewById(R.id.NoContact);
+        mListView = (ListView) findViewById(R.id.android_list);
+        mSwipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
+        mSwipeContainer.setColorSchemeResources(R.color.darkblue);
+        mSwipeContainer.setEnabled(false);
+        mListView.setLongClickable(true);
 
         //card  = (CardView) findViewById(R.id.card_view);
-        relay = (RelativeLayout) findViewById(R.id.search);
-        searchBar = (SearchView) findViewById(R.id.searchButton);
-        searchBar.onActionViewCollapsed();
+        mRelativeLayout = (RelativeLayout) findViewById(R.id.search);
+        mSearchBar = (SearchView) findViewById(R.id.searchButton);
+        mSearchBar.onActionViewCollapsed();
         if (values.length != 0)
-            NoContact.setVisibility(View.INVISIBLE);
+            NoContact_LB.setVisibility(View.INVISIBLE);
     }
 
     public void setWidgetEventListener() {
@@ -208,10 +180,10 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
         adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
         // Assign adapter to ListView
-        listView.setAdapter(adapter);
+        mListView.setAdapter(adapter);
         // ListView Item Click Listener
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 //                Intent intent = new Intent(getApplicationContext(), DetailContactActivity.class);
@@ -226,8 +198,8 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
                 return true;
             }
         });
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//HERE!!!!
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

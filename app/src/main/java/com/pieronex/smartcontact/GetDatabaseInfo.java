@@ -14,6 +14,6 @@ public interface GetDatabaseInfo {
 
     public  String getDisplayNameFromDB(ContentResolver contentResolver, Cursor cursor);
 
-    public  String getPhoneNoFromDB(ContentResolver contentResolver, Cursor cursor);
+    public String getPhoneNoFromDB(ContentResolver contentResolver, Cursor cursor);
 
 }

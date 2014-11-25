@@ -4,28 +4,15 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class DetailContactActivity extends Activity {
@@ -48,7 +35,11 @@ public class DetailContactActivity extends Activity {
         setContentView(R.layout.contact_detail);
         account = null;
         bindWidget();
-        getActionBar().hide();
+        try {
+            getActionBar().hide();
+        }catch (Exception e) {
+            //DO NOTHING!
+        }
 
 
         setInfoContact();
@@ -74,7 +65,7 @@ public class DetailContactActivity extends Activity {
 
     public void setHeader() {
 
-        Log.d("InfoContact:->  ", nameinfo + ", " + nicknameinfo + ", " + tagsinfo + ", " + account.getEmail(getContentResolver()));
+        Log.d("InfoContact:->  ", nameinfo + ", " + nicknameinfo + ", " + tagsinfo + ", " + account.getEmailFromDB(getContentResolver()));
 
         nameContact.setText(nameinfo);
         phoneNo_mobile.setText(telinfo);
@@ -95,8 +86,8 @@ public class DetailContactActivity extends Activity {
         this.nameinfo = account.getDisplayName();
         this.telinfo = account.getPhoneNo();
         this.id = account.getId();
-        if(account.getEmail(getContentResolver()).size()!=0)
-            emailInfo = account.getEmail(getContentResolver()).get(0);
+        if(account.getEmailFromDB(getContentResolver()).size()!=0)
+            emailInfo = account.getEmailFromDB(getContentResolver()).get(0);
 
 
     }
