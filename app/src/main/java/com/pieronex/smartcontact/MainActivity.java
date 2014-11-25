@@ -47,7 +47,7 @@ import  com.pieronex.smartcontact.R;
 import java.util.Observer;
 
 
-public class MainActivity extends Activity implements Observer, View.OnClickListener {
+public class MainActivity extends Activity  implements Observer, View.OnClickListener {
     //private Account accountModel;
     //ArrayList<Observer> accountModel = new ArrayList<Observer>();
     List<String> contacts = new ArrayList<String>();
@@ -138,18 +138,6 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
     }
 
-
-
-//    public static void sort(List<String> contactss) {
-//        int j;
-//        for (int i = 1; i < contactss.size(); i++) {
-//            j = i;
-//            while (j > 0 && contactss.get(j).compareTo(contactss.get(j - 1)) < 0) {
-//                Collections.swap(contactss, j, j - 1);
-//                j--;
-//            }
-//        }
-//    }
 
 
 
