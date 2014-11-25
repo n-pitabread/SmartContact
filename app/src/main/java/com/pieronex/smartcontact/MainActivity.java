@@ -29,7 +29,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class MainActivity extends Activity  implements Observer, View.OnClickListener {
+public class MainActivity extends Activity {
 
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
@@ -39,7 +39,6 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
     private ListView mListView;
     private TextView NoContact_LB;
     private SwipeRefreshLayout mSwipeContainer;
-    String[] values = contactList();
 
     //SearchBar
     private SearchView mSearchBar;
@@ -73,11 +72,13 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
 
         mSearchBar = (SearchView) findViewById(R.id.searchButton);//SearchView SearchBar
         mSearchBar.onActionViewCollapsed();
-        if (values.length != 0)
-            NoContact_LB.setVisibility(View.INVISIBLE);
+
     }
 
     public void setWidgetEventListener() {
+        if (accountModel.size() != 0) {
+            NoContact_LB.setVisibility(View.INVISIBLE);
+        }
         adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
         // Assign adapter to ListView
         mListView.setAdapter(adapter);
@@ -214,6 +215,13 @@ public class MainActivity extends Activity  implements Observer, View.OnClickLis
             Uri uri = ContactsContract.Contacts.CONTENT_URI;
             i.setData(uri);
             startActivity(i);
+        } else if(id == R.id.action_menu){
+            switch (item.getItemId()){
+                case R.id.form1: //GO TO FILTER SEARCH ACTIVITY
+
+                case R.id.form2://GO TO ABOUT PAGE
+
+            }
         }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
