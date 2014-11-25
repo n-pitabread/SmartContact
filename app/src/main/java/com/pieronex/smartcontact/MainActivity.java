@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -176,9 +177,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//               Uri contact = Uri.withAppendedPath(
-//                       ContactsContract.Contacts.CONTENT_URI, String.valueOf(data.getLong(ContactsQuery.ID)));
-                //-------------------------------------
+
 
                 String uri = "tel:" + accountModel.get(position).getPhoneNo();
                 Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
@@ -259,7 +258,8 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -269,7 +269,12 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        if(id == R.id.action_add){
+            Intent i = new Intent(Intent.ACTION_INSERT);
+            Uri uri = ContactsContract.Contacts.CONTENT_URI;
+            i.setData(uri);
+            startActivity(i);
+        }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
 //            return true;

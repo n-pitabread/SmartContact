@@ -16,5 +16,6 @@
     <string name="nocontact">No Contact Found</string>
     <string name="title_activity_detail_contact">title</string>
     <string name="title_activity_edit_contact">EditContactActivity</string>
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 
 </resources>
