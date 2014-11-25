@@ -14,6 +14,7 @@ import android.graphics.Picture;
 import android.media.audiofx.AcousticEchoCanceler;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -120,8 +121,18 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
         swipecontainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
+
             public void onRefresh() {
-                Log.d("Refresh", "Yeahhhh");
+                swipecontainer.setRefreshing(true);
+                Log.d("Swipe", "Refreshing Number");
+                (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                        ContactModel.loadAccounts(getContentResolver());
+                        ContactModel.applyFilter(adapter, "");
+                        swipecontainer.setRefreshing(false);
+                    }
+                }, 0);
             }
         });
 
@@ -129,16 +140,18 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
 
 
-    public static void sort(List<String> contactss) {
-        int j;
-        for (int i = 1; i < contactss.size(); i++) {
-            j = i;
-            while (j > 0 && contactss.get(j).compareTo(contactss.get(j - 1)) < 0) {
-                Collections.swap(contactss, j, j - 1);
-                j--;
-            }
-        }
-    }
+//    public static void sort(List<String> contactss) {
+//        int j;
+//        for (int i = 1; i < contactss.size(); i++) {
+//            j = i;
+//            while (j > 0 && contactss.get(j).compareTo(contactss.get(j - 1)) < 0) {
+//                Collections.swap(contactss, j, j - 1);
+//                j--;
+//            }
+//        }
+//    }
+
+
 
     public void bindWidget() {
 
@@ -146,6 +159,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
         listView = (ListView) findViewById(R.id.android_list);
         swipecontainer = (SwipeRefreshLayout)findViewById(R.id.swipe_container);
         listView.setLongClickable(true);
+
         //card  = (CardView) findViewById(R.id.card_view);
         relay = (RelativeLayout) findViewById(R.id.search);
         searchBar = (SearchView) findViewById(R.id.searchButton);
@@ -156,12 +170,7 @@ public class MainActivity extends Activity implements Observer, View.OnClickList
 
     public void setWidgetEventListener() {
 
-        Collections.sort(contacts, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return lhs.compareTo(rhs);
-            }
-        });
+
 
         adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, contacts);
