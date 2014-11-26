@@ -94,8 +94,15 @@ public class MainActivity extends Activity {
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d("displayName ", accountModel.get(position).getDisplayName());
+                Log.d("phoneNo ", accountModel.get(position).getPhoneNo());
+                Log.d("email ", String.valueOf(accountModel.get(position).getEmail(getContentResolver())));
+                Log.d("nickname ", accountModel.get(position).getNickName());
+                Log.d("tags ", accountModel.get(position).getTags());
+                Log.d("id ", accountModel.get(position).getId());
+
                 Intent i = new Intent(Intent.ACTION_VIEW);
-                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,String.valueOf(accountModel.get(position).getId()));
+                Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, String.valueOf(accountModel.get(position).getId()));
                 i.setData(uri);
                 startActivity(i);
                 return true;

@@ -39,7 +39,6 @@ public class FilterSearch extends Activity {
      }
 
     public void setupwidgetlistener(){
-
     }
 
     @Override

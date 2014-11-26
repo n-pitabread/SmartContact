@@ -119,7 +119,38 @@ public class ContactModel {
                 emailCur.close();
                 ///*******************************************************************///
                 /*retrieve tag or note from the divu*/
+                Cursor contactsCursor = null;
+                try {
+                    contactsCursor = contentResolver.query(ContactsContract.RawContacts.CONTENT_URI,
+                            new String [] { ContactsContract.RawContacts._ID },
+                            null, null, null);
+                    if (contactsCursor != null && contactsCursor.moveToFirst()) {
+                        do {
+                            String rawContactId = contactsCursor.getString(0);
+                            Cursor noteCursor = null;
+                            try {
+                                noteCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
+                                        new String[]{ContactsContract.Data._ID, ContactsContract.CommonDataKinds.Note.NOTE},
+                                        ContactsContract.Data.RAW_CONTACT_ID + "=?" + " AND "
+                                                + ContactsContract.Data.MIMETYPE + "='" + ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE + "'",
+                                        new String[]{rawContactId}, null);
 
+                                if (noteCursor != null && noteCursor.moveToFirst()) {
+                                    mTag = noteCursor.getString(noteCursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
+                                    //Log.d(APP_TAG, "Note: " + note);
+                                }
+                            } finally {
+                                if (noteCursor != null) {
+                                    noteCursor.close();
+                                }
+                            }
+                        } while (contactsCursor.moveToNext());
+                    }
+                } finally {
+                    if (contactsCursor != null) {
+                        contactsCursor.close();
+                    }
+                }
 
                 ///*******************************************************************///
                 //*create Account with 3 params, and put into the accounts list*/
