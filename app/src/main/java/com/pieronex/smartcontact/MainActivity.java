@@ -1,11 +1,15 @@
 package com.pieronex.smartcontact;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -14,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -22,7 +27,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +34,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
 
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
@@ -50,9 +54,9 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bindWidget();//Init Activity Element
-        displayContacts();//show Contact
-        setWidgetEventListener();//Set Widget
+        //bindWidget();//Init Activity Element
+        //displayContacts();//show Contact
+        //setWidgetEventListener();//Set Widget
     }
 
 
@@ -60,7 +64,6 @@ public class MainActivity extends Activity{
 
     public void bindWidget() {
         NoContact_LB = (TextView) findViewById(R.id.NoContact); //textView Show when No Contact found
-        NoContact_LB.setVisibility(View.INVISIBLE);
 
         mListView = (ListView) findViewById(R.id.android_list);//ListView
         mListView.setLongClickable(true);
@@ -74,11 +77,12 @@ public class MainActivity extends Activity{
 
         mSearchBar = (SearchView) findViewById(R.id.searchButton);//SearchView SearchBar
         mSearchBar.onActionViewCollapsed();
+
     }
 
     public void setWidgetEventListener() {
-        if (accountModel.size() == 0) {
-            NoContact_LB.setVisibility(View.VISIBLE);
+        if (accountModel.size() != 0) {
+            NoContact_LB.setVisibility(View.INVISIBLE);
         }
         adapter = new ArrayAdapter<Account>(this, android.R.layout.simple_list_item_1, android.R.id.text1, accountModel);
         // Assign adapter to ListView
@@ -87,17 +91,8 @@ public class MainActivity extends Activity{
 
         //Long Click item on list
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            /*view information of the contact at the postion of  "position"*/
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("displayname : ", accountModel.get(position).getDisplayName());
-                Log.d("phoneNo : ", accountModel.get(position).getPhoneNo());
-                Log.d("email : ", String.valueOf(accountModel.get(position).getEmail(getContentResolver())));
-                Log.d("tags : ", accountModel.get(position).getTags());
-                Log.d("id : ", accountModel.get(position).getId());
-                Log.d("nickname : ", accountModel.get(position).getNickName());
-
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI,String.valueOf(accountModel.get(position).getId()));
                 i.setData(uri);
@@ -108,11 +103,9 @@ public class MainActivity extends Activity{
 
         //When Click Item on list
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            /*perform calling action when short click is on the listView at that position*/
+
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
                 String uri = "tel:" + accountModel.get(position).getPhoneNo();
                 Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse(uri));
                 startActivity(callIntent);
@@ -126,7 +119,7 @@ public class MainActivity extends Activity{
             public void onClick(View v) {
                 //Debug
                 Log.d("search", "Work!!!");
-                //searchBar.setOnQueryTextListener(this);
+//                searchBar.setOnQueryTextListener(this);
 
                 //searchBar.onActionViewCollapsed();
                 mSearchBar.onActionViewExpanded();
@@ -135,7 +128,7 @@ public class MainActivity extends Activity{
             }
         });
 
-        //Get String In searchBar to find Contact and filter it to get specific one
+        //Get String In searchBar to find Contact
         mSearchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -202,7 +195,7 @@ public class MainActivity extends Activity{
             }
         });
     }
-    /*create accounts by calling ContactModel and return List of Account to accountModel*/
+
     private void displayContacts() {
         accountModel = new ArrayList<Account>(ContactModel.getAccounts(getContentResolver()));
 
@@ -221,29 +214,29 @@ public class MainActivity extends Activity{
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        switch(item.getItemId()) {
-            case R.id.action_add:
-                Intent i = new Intent(Intent.ACTION_INSERT);
-                Uri uri = ContactsContract.Contacts.CONTENT_URI;
-                i.setData(uri);
-                startActivity(i);
-                break;
-            case(R.id.action_settings) :
-                Intent intent = new Intent(getApplicationContext(), FilterSearch.class);
-                startActivity(intent);
+        int id = item.getItemId();
+        if(id == R.id.action_add){
+            Intent i = new Intent(Intent.ACTION_INSERT);
+            Uri uri = ContactsContract.Contacts.CONTENT_URI;
+            i.setData(uri);
+            startActivity(i);
+        }else if(id == R.id.form2){
+            try {
+                showDialog();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else if(id == R.id.form1){
+            //OPEN SEARCH FILTER DO SOMETHINGS
         }
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {  //  <- waiting fill in request code
-//            if (data.hasExtra("myData1")) {
-//                Toast.makeText(this, data.getExtras().getString("myData1"),
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
 
     public void readContacts() {
         String mEmail = "", mId = "", mDisplayName = "", mPhoneNo = "", mLastTimeContacted = "", mNickName = "", mMiddleName = "";
@@ -378,5 +371,25 @@ public class MainActivity extends Activity{
             }
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void showDialog() throws Exception
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setIcon(R.drawable.yinyang);
+        builder.setTitle("About us");
+        builder.setView(R.layout.about_fragment);
+
+        builder.setNeutralButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
 
 }
