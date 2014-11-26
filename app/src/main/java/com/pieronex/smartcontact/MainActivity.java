@@ -227,7 +227,7 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }else if(id == R.id.form1){
-            //OPEN SEARCH FILTER
+            //OPEN SEARCH FILTER DO SOMETHINGS
         }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
