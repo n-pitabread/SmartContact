@@ -7,17 +7,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ToggleButton;
 
 
 public class FilterSearch extends Activity {
 
-    private RadioButton RadioName;
-    private RadioButton RadioNickname;
-    private RadioButton Radiophone;
-    private RadioButton Radiotag;
-    private RadioButton Radiomail;
+    private ToggleButton ToggleName;
+    private ToggleButton ToggleNickname;
+    private ToggleButton Togglephone;
+    private ToggleButton Togglemail;
+    private ToggleButton Toggletag;
 
 
     @Override
@@ -29,73 +31,15 @@ public class FilterSearch extends Activity {
     }
 
     public void bindwidget(){
-        RadioName = (RadioButton)findViewById(R.id.displayname);
-        RadioNickname = (RadioButton)findViewById(R.id.nickname);
-        Radiophone = (RadioButton)findViewById(R.id.phonenumber);
-        Radiomail = (RadioButton)findViewById(R.id.email_filter);
-        Radiotag = (RadioButton)findViewById(R.id.tag);
+        ToggleName = (ToggleButton)findViewById(R.id.displayname);
+        ToggleNickname = (ToggleButton)findViewById(R.id.nickname);
+        Togglephone = (ToggleButton)findViewById(R.id.phonenumber);
+        Togglemail = (ToggleButton)findViewById(R.id.email_filter);
+        Toggletag = (ToggleButton)findViewById(R.id.tag);
      }
 
     public void setupwidgetlistener(){
-        RadioName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(RadioName.isChecked()) {
-                    RadioName.setChecked(false);
-                }
-                else {
-                    RadioName.setChecked(true);
-                }
-            }
-        });
 
-        RadioNickname.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(RadioNickname.isChecked()) {
-                    RadioNickname.setChecked(false);
-                }
-                else {
-                    RadioNickname.setChecked(true);
-                }
-            }
-        });
-
-        Radiophone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(Radiophone.isChecked()) {
-                    Radiophone.setChecked(false);
-                }
-                else {
-                    Radiophone.setChecked(true);
-                }
-            }
-        });
-
-        Radiomail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(Radiomail.isChecked()) {
-                    Radiomail.setChecked(true);
-                }
-                else {
-                    Radiomail.setChecked(false);
-                }
-            }
-        });
-
-        Radiotag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(Radiotag.isChecked()) {
-                    Radiotag.setChecked(false);
-                }
-                else {
-                    Radiotag.setChecked(true);
-                }
-            }
-        });
     }
 
     @Override
