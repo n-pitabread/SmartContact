@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -22,6 +23,7 @@ public class FilterSearch extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter_search);
         bindwidget();
+        setupwidgetlistener();
     }
 
     public void bindwidget(){
@@ -32,6 +34,67 @@ public class FilterSearch extends Activity {
         Radiotag = (RadioButton)findViewById(R.id.tag);
      }
 
+    public void setupwidgetlistener(){
+        RadioName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(RadioName.isChecked()) {
+                    RadioName.setChecked(false);
+                }
+                else {
+                    RadioName.setChecked(true);
+                }
+            }
+        });
+
+        RadioNickname.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(RadioNickname.isChecked()) {
+                    RadioNickname.setChecked(false);
+                }
+                else {
+                    RadioNickname.setChecked(true);
+                }
+            }
+        });
+
+        Radiophone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Radiophone.isChecked()) {
+                    Radiophone.setChecked(false);
+                }
+                else {
+                    Radiophone.setChecked(true);
+                }
+            }
+        });
+
+        Radiomail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Radiomail.isChecked()) {
+                    Radiomail.setChecked(false);
+                }
+                else {
+                    Radiomail.setChecked(true);
+                }
+            }
+        });
+
+        Radiotag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Radiotag.isChecked()) {
+                    Radiotag.setChecked(false);
+                }
+                else {
+                    Radiotag.setChecked(true);
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
