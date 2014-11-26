@@ -34,11 +34,25 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * <h1>Main Activity</h1>
+ * This class acts as a controller between the models and the views.
+ *
+ *
+ *
+ * @author Puriwat Khantiviriya
+ * @author Sasawat Chanate
+ * @author Thitiwat Watanajaturaporn
+ * @version 1.0
+ * @since   2014-11-25
+ */
+
 
 public class MainActivity extends Activity {
 
     List<String> contacts = new ArrayList<String>();
     List<Account> accountModel = new ArrayList<Account>();
+    private boolean[] booleanFromChild;
 
     //ArrayAdapter<Account> adapter;
     private ArrayAdapter adapter;
@@ -50,6 +64,8 @@ public class MainActivity extends Activity {
     private SearchView mSearchBar;
     private RelativeLayout mRelativeLayout;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,9 +76,10 @@ public class MainActivity extends Activity {
         setWidgetEventListener();//Set Widget
     }
 
-
-
-
+    /**
+     * Binds widgets from the view with different variables
+     *
+     */
     public void bindWidget() {
         NoContact_LB = (TextView) findViewById(R.id.NoContact); //textView Show when No Contact found
 
@@ -81,6 +98,10 @@ public class MainActivity extends Activity {
 
     }
 
+    /**
+     * Set event listener for widgets
+     *
+     */
     public void setWidgetEventListener() {
         if (accountModel.size() != 0) {
             NoContact_LB.setVisibility(View.INVISIBLE);
@@ -204,6 +225,10 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * Retrieve list of accounts
+     *
+     */
     private void displayContacts() {
         accountModel = new ArrayList<Account>(ContactModel.getAccounts(getContentResolver()));
 
@@ -230,173 +255,24 @@ public class MainActivity extends Activity {
                 i.setData(uri);
                 startActivity(i);
                 break;
-            case R.id.form1:
 
-                break;
-            case R.id.form2
-
+            case R.id.form2:
+                try {
+                    showDialog();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
-
-
-        /*int id = item.getItemId();
-        if(id == R.id.action_add){
-            Intent i = new Intent(Intent.ACTION_INSERT);
-            Uri uri = ContactsContract.Contacts.CONTENT_URI;
-            i.setData(uri);
-            startActivity(i);
-        }else if(id == R.id.form2){
-            try {
-                showDialog();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else if(id == R.id.form1){
-            Log.d("here", "yeah inside");
-            Intent intent = new Intent(getApplicationContext(), FilterSearch.class);
-            startActivityForResult(intent, 1);
-        }*/
 
         return super.onOptionsItemSelected(item);
     }
 
 
-
-
-    public void readContacts() {
-        String mEmail = "", mId = "", mDisplayName = "", mPhoneNo = "", mLastTimeContacted = "", mNickName = "", mMiddleName = "";
-        String mGivenName = "", mFamilyName = "", mPrefix = "", mSuffix = "", mAddress = "", mNote = "", mWhereOrg = "", mInstantM = "";
-
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-                mId = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                mGivenName = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                //  ur.getString(cur.getColumnIndex(ContactsContract.Contacts.));
-                if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    //System.out.println("name : " + mGivenName + ", ID : " + mId);
-
-                    // get the phone number
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{mId}, null);
-                    while (pCur.moveToNext()) {
-                        mPhoneNo = pCur.getString(
-                                pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //System.out.println("phone" + mPhoneNo);
-                    }
-                    pCur.close();
-
-
-                    // get email and type
-
-                    Cursor emailCur = cr.query(
-                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                            new String[]{mId}, null);
-                    while (emailCur.moveToNext()) {
-                        // This would allow you get several email addresses
-                        // if the email addresses were stored in an array
-                        mEmail = emailCur.getString(
-                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        String emailType = emailCur.getString(
-                                emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-
-                        // System.out.println("Email " + mEmail + " Email Type : " + emailType);
-                    }
-                    emailCur.close();
-
-                    // Get note.......
-                    String noteWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] noteWhereParams = new String[]{mId,
-                            ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
-                    Cursor noteCur = cr.query(ContactsContract.Data.CONTENT_URI, null, noteWhere, noteWhereParams, null);
-                    if (noteCur.moveToFirst()) {
-                        mNote = noteCur.getString(noteCur.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE));
-                        //  System.out.println("Note " + mNote);
-                    }
-                    noteCur.close();
-
-                    //Get Postal Address....
-
-                    String addrWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] addrWhereParams = new String[]{mId,
-                            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE};
-                    Cursor addrCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, null, null, null);
-                    while (addrCur.moveToNext()) {
-                        String poBox = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX));
-                        String street = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET));
-                        String city = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY));
-                        String state = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION));
-                        String postalCode = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE));
-                        String country = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY));
-                        String type = addrCur.getString(
-                                addrCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.TYPE));
-
-                        // Do something with these....
-                        mAddress = poBox + ", " + street + ", " + city + ", " + state + ", " + postalCode + ", " + country;
-
-                    }
-                    addrCur.close();
-
-                    // Get Instant Messenger.........
-                    String imWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] imWhereParams = new String[]{mId,
-                            ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE};
-                    Cursor imCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, imWhere, imWhereParams, null);
-                    if (imCur.moveToFirst()) {
-                        String imName = imCur.getString(
-                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
-                        String imType;
-                        imType = imCur.getString(
-                                imCur.getColumnIndex(ContactsContract.CommonDataKinds.Im.TYPE));
-                        mInstantM = imName + ", " + imType;
-                    }
-                    imCur.close();
-
-                    // Get Organizations.........
-
-                    String orgWhere = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] orgWhereParams = new String[]{mId,
-                            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE};
-                    Cursor orgCur = cr.query(ContactsContract.Data.CONTENT_URI,
-                            null, orgWhere, orgWhereParams, null);
-                    if (orgCur.moveToFirst()) {
-                        String orgName = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.DATA));
-                        String title = orgCur.getString(orgCur.getColumnIndex(ContactsContract.CommonDataKinds.Organization.TITLE));
-                        mWhereOrg = orgWhere + ", " + title;
-                    }
-
-                    orgCur.close();
-
-                    String familyName =ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                    String[] familyNameParams = new String[]{mId, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE};
-                    Cursor familyCur = cr.query(ContactsContract.Data.CONTENT_URI, null, familyName, familyNameParams, null);
-                    if(familyCur.moveToNext()){
-                        mFamilyName = familyCur.getString(familyCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
-                    }
-                    //cr.query(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
-                    contacts.add(mGivenName);
-//                    accountModel.add(new Account(mGivenName, mFamilyName, "middleName", "mNickName", mPhoneNo, mEmail, "Pic"));
-
-                }
-
-            }
-        }
-    }
-
+    /**
+     * Show "about" dialog
+     *
+     */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void showDialog() throws Exception
     {
@@ -420,8 +296,8 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == 1) {
 //            String ss = data.getStringExtra("result");
-            boolean[] tt = data.getBooleanArrayExtra("result");
-            Log.d("data from child: ", tt[0]? "true":"false");
+            booleanFromChild = data.getBooleanArrayExtra("result");
+            Log.d("data from child: ", booleanFromChild[0]? "true":"false");
 
         }
 

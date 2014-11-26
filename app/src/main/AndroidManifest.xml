@@ -24,10 +24,6 @@
             android:name="com.pieronex.smartcontact.EditContactActivity"
             android:label="@string/title_activity_edit_contact" >
         </activity>
-        <activity
-            android:name="com.pieronex.smartcontact.FilterSearch"
-            android:label="@string/title_activity_filter_search" >
-        </activity>
     </application>
 
 </manifest>

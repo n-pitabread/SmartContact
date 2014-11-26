@@ -8,8 +8,6 @@
         android:orderInCategory="100" android:showAsAction="always">
 
         <menu>
-            <item android:id="@+id/form1"
-                android:title="Settings"/>
             <item android:id="@+id/form2"
                 android:title="About"/>
         </menu>
