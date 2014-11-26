@@ -1,11 +1,15 @@
 package com.pieronex.smartcontact;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.ContactsContract;
@@ -14,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -49,9 +54,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bindWidget();//Init Activity Element
-        displayContacts();//show Contact
-        setWidgetEventListener();//Set Widget
+        //bindWidget();//Init Activity Element
+        //displayContacts();//show Contact
+        //setWidgetEventListener();//Set Widget
     }
 
 
@@ -215,13 +220,14 @@ public class MainActivity extends Activity {
             Uri uri = ContactsContract.Contacts.CONTENT_URI;
             i.setData(uri);
             startActivity(i);
-        } else if(id == R.id.action_menu){
-            switch (item.getItemId()){
-                case R.id.form1: //GO TO FILTER SEARCH ACTIVITY
-
-                case R.id.form2://GO TO ABOUT PAGE
-
+        }else if(id == R.id.form2){
+            try {
+                showDialog();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+        }else if(id == R.id.form1){
+            //OPEN SEARCH FILTER
         }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
@@ -365,5 +371,25 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void showDialog() throws Exception
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setIcon(R.drawable.yinyang);
+        builder.setTitle("About us");
+        builder.setView(R.layout.about_fragment);
+
+        builder.setNeutralButton("Done", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.show();
+    }
+
 
 }

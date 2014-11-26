@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/head"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Contact"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:id="@+id/lb0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Contacts is designed by three software engineer students who are eager to make lives easier and the world a better place to live."
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:layout_below="@id/head"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/lb1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pre-Alpha Version 0.0.1"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb0"/>
+
+    <TextView
+        android:id="@+id/lb2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create By"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb1"/>
+
+    <TextView
+        android:id="@+id/lb3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sasawat Chanate (sasawatc)"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb2"/>
+
+    <TextView
+        android:id="@+id/lb4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thitiwat Watanajaturapron (s6090031)"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb3"/>
+
+    <TextView
+        android:id="@+id/lb5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Puriwat Khantiviriya (pieromoto) - NEX - "
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb4"/>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/lb6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="
+  for GitHub \nhttps://github.com/pieromoto/SmartContact"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/lb5"
+        android:layout_alignParentTop="false"
+        android:autoLink="web"
+        android:textAlignment="center"
+        android:gravity="center_horizontal" />
+
+
+
+</RelativeLayout>
