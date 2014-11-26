@@ -60,11 +60,14 @@ public class FilterSearch extends Activity {
         if (id == R.id.action_done) {
             //DO SOMETHINGS!!!!!!!!!!!
             Intent data = new Intent();
-        data.putExtra("choice", "something");
-            Log.d("Finish", "go back to Parents");
+//            data.putExtra("choice", "something");
 
+            boolean []checkButton = {ToggleName.isChecked(), ToggleNickname.isChecked(),  Togglephone.isChecked(), Togglemail.isChecked(), Toggletag.isChecked()};
+
+            data.putExtra("result", checkButton);
             setResult(RESULT_OK, data);
             finish();
+            Log.d("Finish", "go back to Parents");
         }
 
         return super.onOptionsItemSelected(item);
