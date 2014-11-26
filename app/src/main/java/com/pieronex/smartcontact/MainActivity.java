@@ -222,7 +222,24 @@ public class MainActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+
+        switch (item.getItemId()){
+            case R.id.action_add:
+                Intent i = new Intent(Intent.ACTION_INSERT);
+                Uri uri = ContactsContract.Contacts.CONTENT_URI;
+                i.setData(uri);
+                startActivity(i);
+                break;
+            case R.id.form1:
+
+                break;
+            case R.id.form2
+
+                break;
+        }
+
+
+        /*int id = item.getItemId();
         if(id == R.id.action_add){
             Intent i = new Intent(Intent.ACTION_INSERT);
             Uri uri = ContactsContract.Contacts.CONTENT_URI;
@@ -237,12 +254,8 @@ public class MainActivity extends Activity {
         }else if(id == R.id.form1){
             Log.d("here", "yeah inside");
             Intent intent = new Intent(getApplicationContext(), FilterSearch.class);
-            startActivityForResult(intent,1);
-        }
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+            startActivityForResult(intent, 1);
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -406,11 +419,12 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == 1) {
-            if (data.hasExtra("myData1")) {
-                Toast.makeText(this, data.getExtras().getString("myData1"),
-                        Toast.LENGTH_SHORT).show();
-            }
+//            String ss = data.getStringExtra("result");
+            boolean[] tt = data.getBooleanArrayExtra("result");
+            Log.d("data from child: ", tt[0]? "true":"false");
+
         }
+
     }
 
 }
