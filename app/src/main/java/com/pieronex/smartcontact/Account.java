@@ -13,31 +13,31 @@ import java.util.List;
  */
 
 public class Account extends  Activity implements Parcelable{//extends Observable{
-    private String displayName;//name
-    private String phoneNo;//phone number
-    private String email;//e-mail
-    private String address;//address
+    private String displayName = "";//name
+    private String phoneNo = "";//phone number
+    private String email = "";//e-mail
+    private String nickName = "";
     private String organization;//organization
     private String id;//id
-    private ArrayList<String> tags;
+    private String tags;
     private ContentResolver contentResolver;//
 
 
-    public Account(String mDisplayName, String mPhoneNo, String mEmail, String mAddress, String mOrganization, String mId, ContentResolver mContentResolver){
+    public Account(String mDisplayName, String mPhoneNo, String mEmail, String mNickName, String mTag, String mId, ContentResolver mContentResolver){
         displayName = mDisplayName;
         phoneNo = mPhoneNo;
-        address = mAddress;
-        organization = mOrganization;
+        nickName = mNickName;
+        tags = mTag;
         id = mId;
         email = mEmail;
         contentResolver = mContentResolver;
     }
 
 
-    public Account(String mFirstName, String mPhoneNo, String mId, ContentResolver mcontentResolver){
-
-        this(mFirstName, mPhoneNo, null, null, null , mId, mcontentResolver);
-    }
+//    public Account(String mFirstName, String mPhoneNo, String mId, ContentResolver mcontentResolver){
+//
+//        this(mFirstName, mPhoneNo, null, null, null , mId, mcontentResolver);
+//    }
 
     public String getDisplayName() {
         return displayName;
@@ -47,8 +47,12 @@ public class Account extends  Activity implements Parcelable{//extends Observabl
         return phoneNo;
     }
 
-    public ArrayList<String> getTags() {
+    public String getTags() {
         return tags;
+    }
+
+    public void setTags(String mTags1){
+        this.tags = mTags1;
     }
 
 
@@ -95,20 +99,12 @@ public class Account extends  Activity implements Parcelable{//extends Observabl
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public String getNickName(){
+        return nickName;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
+    public void setNickName(String mNickName){
+        this.nickName = mNickName;
     }
 
     public String toString(){
@@ -126,9 +122,9 @@ public class Account extends  Activity implements Parcelable{//extends Observabl
         /*email = data[2];*/
         setEmail(data[2]);
         /*address = data[3];*/
-        setAddress(data[3]);
+        setNickName(data[3]);
         /*organization =data[4];*/
-        setOrganization (data[4]);
+         setTags(data[4]);
         /*id = data[5];*/
         setId (data[5]);
     }
@@ -145,7 +141,7 @@ public class Account extends  Activity implements Parcelable{//extends Observabl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{displayName, phoneNo, email, address, organization, id});
+        dest.writeStringArray(new String[]{displayName, phoneNo, email, nickName, tags, id});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
