@@ -1,7 +1,9 @@
 package com.pieronex.smartcontact;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,10 +77,10 @@ public class FilterSearch extends Activity {
             @Override
             public void onClick(View v) {
                 if(Radiomail.isChecked()) {
-                    Radiomail.setChecked(false);
+                    Radiomail.setChecked(true);
                 }
                 else {
-                    Radiomail.setChecked(true);
+                    Radiomail.setChecked(false);
                 }
             }
         });
@@ -113,6 +115,12 @@ public class FilterSearch extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_done) {
             //DO SOMETHINGS!!!!!!!!!!!
+            Intent data = new Intent();
+        data.putExtra("choice", "something");
+            Log.d("Finish", "go back to Parents");
+
+            setResult(RESULT_OK, data);
+            finish();
         }
 
         return super.onOptionsItemSelected(item);

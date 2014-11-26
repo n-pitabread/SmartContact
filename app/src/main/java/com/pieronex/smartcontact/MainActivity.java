@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +55,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //bindWidget();//Init Activity Element
-        //displayContacts();//show Contact
-        //setWidgetEventListener();//Set Widget
+        bindWidget();//Init Activity Element
+        displayContacts();//show Contact
+        setWidgetEventListener();//Set Widget
     }
 
 
@@ -227,7 +228,9 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }else if(id == R.id.form1){
-            //OPEN SEARCH FILTER DO SOMETHINGS
+            Log.d("here", "yeah inside");
+            Intent intent = new Intent(getApplicationContext(), FilterSearch.class);
+            startActivityForResult(intent,1);
         }
         //noinspection SimplifiableIfStatement
 //        if (id == R.id.action_settings) {
@@ -236,6 +239,8 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
     public void readContacts() {
@@ -391,5 +396,14 @@ public class MainActivity extends Activity {
         builder.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == 1) {
+            if (data.hasExtra("myData1")) {
+                Toast.makeText(this, data.getExtras().getString("myData1"),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

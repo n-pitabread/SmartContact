@@ -51,6 +51,8 @@ public class ContactModel {
                 /*get display name contact*/
             mGivenName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
+//            mNickname = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME));
+
             ///*******************************************************************///
             if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                     /*move cursor to phone's column*/
@@ -75,21 +77,37 @@ public class ContactModel {
 //                nicknameCursor.close();
                 ////*******************************************************************///
                 try {
-                    Cursor nickNamecursor = mContentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, ContactsContract.Contacts._ID + " = ?", new String[]{String.valueOf(mId)}, null);
+                    //Cursor nickNamecursor = mContentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, ContactsContract.Contacts._ID + " = ?", new String[]{String.valueOf(mId)}, null);
+                    Cursor nickNamecursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
+                            new String[]{ContactsContract.Data.DISPLAY_NAME},
+                            ContactsContract.CommonDataKinds.Nickname.DATA1 + "=?",
+                            new String[] { mId },
+                            null);
                     while (nickNamecursor.moveToNext()) {
-                        String where = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
-                        String[] params = new String[]{String.valueOf(mId), ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE};
-                        Cursor nickname = mContentResolver.query(ContactsContract.Data.CONTENT_URI, null, where, params, null);
-                        while (nickname.moveToNext()) {
-                            mNickname = nickname.getString(nickname.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME));
-                            String nicknameType = nickname.getString(nickname.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.TYPE));
+//                        String where = ContactsContract.Data.CONTACT_ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?";
+//                        String[] params = new String[]{String.valueOf(mId), ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE};
+//                        Cursor nickname = mContentResolver.query(ContactsContract.Data.CONTENT_URI, null, where, params, null);
+//                        while (nickname.moveToNext()) {
+                            mNickname = nickNamecursor.getString(nickNamecursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.NAME));
+                            String nicknameType = nickNamecursor.getString(nickNamecursor.getColumnIndex(ContactsContract.CommonDataKinds.Nickname.TYPE));
 
-                        }
+//                        }
                     }
                     nickNamecursor.close();
                 }catch(Exception e){
                     Log.d("Error occur", "WARNING!!!");
                 }
+                //**************************************************************************/////
+//                Cursor nickNamecursor = contentResolver.query(ContactsContract.Data.CONTENT_URI,
+//                        new String[]{ContactsContract.Data.DISPLAY_NAME},
+//                        ContactsContract.CommonDataKinds.Nickname.DATA1 + "=?",
+//                        new String[] { mId },
+//                        null);
+//
+//                if (cursor.moveToFirst())
+//                    String nameOfContact = nickNamecursor.getString(0);
+
+
                 /*Retrieve Email*/
                 Cursor emailCur = contentResolver.query(
                         ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{mId}, null);
@@ -105,7 +123,8 @@ public class ContactModel {
 
                 ///*******************************************************************///
                 //*create Account with 3 params, and put into the accounts list*/
-                accounts.add(new Account(mGivenName, mPhoneNo, mEmail, mNickname, mTag, mId, contentResolver));
+                accounts.add(new Account(mGivenName, mPhoneNo, mEmail,mNickname, mTag, mId, contentResolver));
+
             }
         }
     }
